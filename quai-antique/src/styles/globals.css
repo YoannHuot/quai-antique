@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(275% ));
+  }
+}
+
+.round-bounce {
+  animation: bounce 1.75s ease-in-out infinite;
+}
+.card {
+  transition: flex 1200ms cubic-bezier(0.25, 0.8, 0.25, 1), min-width 1200ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card-container:hover .card {
+  flex: 0.25;
+  transition: flex 1200ms cubic-bezier(0.25, 0.8, 0.25, 1), min-width 1200ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card-container:hover .card:hover {
+  flex: 0.75;
+  transition: flex 1200ms cubic-bezier(0.25, 0.8, 0.25, 1), min-width 1200ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.react-datepicker-wrapper { 
+  width: auto!important
+}
+
+.underline-on-hover:hover div {
+  transform: translateX(0)!important;
+  z-index: 100!important;
+}
+
+
+@font-face {
+    font-family: 'Libre Baskerville';
+    src: url('../../public/fonts/Libre/LibreBaskerville-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+@font-face {
+    font-family: 'Libre Baskerville';
+    src: url('../../public/fonts/Libre/LibreBaskerville-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Libre Baskerville';
+    src: url('../../public/fonts/Libre/LibreBaskerville-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Laila';
+    src: url('../../public/fonts/Laila/Laila-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Laila';
+    src: url('../../public/fonts/Laila/Laila-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Laila';
+    src: url('../../public/fonts/Laila/Laila-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Laila';
+    src: url('../../public/fonts/Laila/Laila-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Laila';
+    src: url('../../public/fonts/Laila/Laila-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+  }
+  

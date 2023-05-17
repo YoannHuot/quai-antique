@@ -7,8 +7,11 @@ import PopUp from "@/components/popups/popup.js";
 import WrapperResa from "@/components/popups/wrapper-resa.js";
 import Header from "@/components/footer-header/header";
 import Authentification from "@/components/popups/authentification";
+import Login from "@/components/popups/login";
+import useAuth from "@/store/auth/hooks";
 
 export default function Home() {
+	const auth = useAuth();
 	const texts = ["73000, rue de Boigne", "Chambéry", "par Arnaud Michant"];
 	const menu = ["Le menu", "Arnaud Michant", "Connexion"];
 
@@ -44,12 +47,18 @@ export default function Home() {
 	const [footerWidth, setFooterWidth] = useState("");
 	const [open, setOpen] = useState(false);
 	const [isMobile, setIsmobile] = useState(false);
-	const [auth, setAuth] = useState(false);
+	const [authentification, setAuthentification] = useState(false);
+	const [signIn, setSignIn] = useState(false);
 
 	const chiefImageRef = useRef(null);
 	const mainRef = useRef(null);
 	const firstSectionRef = useRef(null);
 
+	useEffect(() => {
+		if (auth.authStore.logged) {
+			setSignIn(true);
+		}
+	}, [auth.authStore.logged]);
 	/*
 	 *
 	 * Menu animation
@@ -166,7 +175,7 @@ export default function Home() {
 						mainRef={mainRef}
 						firstSectionRef={firstSectionRef}
 						chiefImageRef={chiefImageRef}
-						setAuth={setAuth}
+						setAuthentification={setAuthentification}
 						setOpen={setOpen}
 					/>
 				</section>
@@ -321,24 +330,73 @@ export default function Home() {
 						<img src="/images/back-button.png" className="w-6 h-6" />
 					</button>
 				</header>
-				<WrapperResa />
+				<WrapperResa
+					setSignIn={setSignIn}
+					setOpen={setOpen}
+					setAuthentification={setAuthentification}
+				/>
 			</PopUp>
 
-			<PopUp open={auth} setOpen={setAuth} large>
-				<header className="w-full flex justify-between items-center">
-					<h2 className="font-Libre text-2xl font-bold w-1/2">
-						Inscription
-					</h2>
+			<PopUp open={authentification} setOpen={setAuthentification} large>
+				<header className="w-full relative pb-4 border-black border-b">
+					{auth.authStore.logged === false ? (
+						<div className="w-full flex justify-between items-center ">
+							<button
+								className={`${!signIn ? "text-gold" : "text-black"} ${
+									!auth.authStore.logged
+										? " flex justify-center items-center "
+										: "flex justify-start"
+								}   w-1/2`}
+								onClick={() => setSignIn(false)}
+							>
+								<h2
+									className={`${
+										!auth.authStore.logged ? "text-" : "text-"
+									} font-Libre xs:text-lg lg:text-2xl font-bold `}
+								>
+									Connexion
+								</h2>
+							</button>
+
+							<button
+								className={`${
+									signIn ? "text-gold" : "text-black"
+								} flex justify-center items-center w-1/2`}
+								onClick={() => setSignIn(true)}
+							>
+								<h2
+									className={`font-Libre xs:text-lg lg:text-2xl text-center font-bold `}
+								>
+									Inscription
+								</h2>
+							</button>
+						</div>
+					) : (
+						<h2
+							className={`
+						font-Libre xs:text-lg lg:text-2xl font-bold `}
+						>
+							<span>Mon profil</span>
+						</h2>
+					)}
+
 					<button
-						className="cursor pointer"
+						className="cursor pointer absolute -top-1 -right-2 lg:-right-4 lg:-top-4"
 						onClick={() => {
-							setAuth(false);
+							setAuthentification(false);
 						}}
 					>
 						<img src="/images/back-button.png" className="w-6 h-6" />
 					</button>
 				</header>
-				<Authentification />
+				{signIn ? (
+					<Authentification
+						signIn={signIn}
+						setAuthentification={setAuthentification}
+					/>
+				) : (
+					<Login setSignIn={setSignIn} />
+				)}
 			</PopUp>
 		</main>
 	);

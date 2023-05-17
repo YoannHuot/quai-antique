@@ -2,15 +2,21 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import _ from "underscore";
 import useDeviceType from "@/hooks/device-type";
+import useAuth from "../../store/auth/hooks";
 
 const Header = ({
 	mainRef,
 	firstSectionRef,
 	chiefImageRef,
 	setOpen,
-	setAuth,
+	setAuthentification,
 }) => {
 	const deviceType = useDeviceType();
+	const auth = useAuth();
+	const [headerWidth, setHeaderWidth] = useState("100%");
+	const [isHeaderSticky, setIsHeaderSticky] = useState(false);
+	const [hasSignIn, setHasSignIn] = useState(false);
+	const headerRef = useRef(null);
 
 	const headerTexts = [
 		{
@@ -19,7 +25,7 @@ const Header = ({
 		},
 
 		{
-			text: deviceType === "desktop" ? "Arnaud Michant" : "Chef Michant",
+			text: deviceType === "desktop" ? "Arnaud Michant" : "Le chef ",
 			onPress: () => {
 				if (chiefImageRef.current) {
 					chiefImageRef.current.scrollIntoView({ behavior: "smooth" });
@@ -27,16 +33,23 @@ const Header = ({
 			},
 		},
 		{
-			text: "Connexion",
+			text: "mon profil",
 			onPress: () => {
-				setAuth(true);
+				hasSignIn ? setAuthentification(true) : setAuthentification(true);
+				setHasSignIn(false);
 			},
 		},
 	];
-	const [headerWidth, setHeaderWidth] = useState("");
-	const [isHeaderSticky, setIsHeaderSticky] = useState(false);
 
-	const headerRef = useRef(null);
+	useEffect(() => {
+		if (!auth.authStore.jwt || auth.authStore.jwt.length < 1) {
+			console.warn("Error 401 : no session token detected");
+		} else if (auth.authStore.jwt && auth.authStore.jwt.length > 1) {
+			setHasSignIn(true);
+		} else if (auth.authStore.jwt === "" || auth.authStore.logged === false) {
+			setHasSignIn(false);
+		}
+	}, [auth.authStore]);
 
 	/*
 	 *
@@ -106,7 +119,7 @@ const Header = ({
 							<button
 								onClick={m.onPress}
 								key={index}
-								className="font-Lustria text-center uppercase xs:text-xs md:text-base relative overflow-hidden underline-on-hover"
+								className="font-Lustria pt-1 text-center uppercase xs:text-xs md:text-base relative overflow-hidden underline-on-hover"
 							>
 								{m.text}
 								<div className="h-0.5 bg-gold bottom-0 left-full w-full transition-all duration-300 ease-in-out transform translate-x-full"></div>

@@ -13,7 +13,7 @@ $passwordConfirm = $data->payload->passwordConfirm;
 $prenom = $data->payload->prenom;
 
 
-$jwt = $data->payload->token;
+// $jwt = $data->payload->token;
 
 
 const SECRET = '0hLa83lleBroue11e';

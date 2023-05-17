@@ -15,6 +15,7 @@ define("DBNAME", "quai_antique");
 
 // DSN de connexion 
 $dsn = "mysql:dbname=" . DBNAME . ";host=" . DBHOST;
+const SECRET = '0hLa83lleBroue11e';
 
 try {
     // instancier PDO : Créer une instance de PDO et connexion à la base
@@ -86,9 +87,6 @@ try {
         horaire_id INT,
         FOREIGN KEY (horaire_id) REFERENCES Horaires(id)
     )");
-
-
-    echo "Success : ";
 
     // On est maintenant connecté
 } catch (PDOException $e) {

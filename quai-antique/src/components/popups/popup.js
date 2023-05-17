@@ -48,7 +48,7 @@ export default function PopUp({ open, setOpen, children, large }) {
 						>
 							<Dialog.Panel
 								className={`${
-									large ? "h-auto" : "h-96"
+									large ? "h-auto" : "h-80"
 								}  w-full relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6`}
 							>
 								{children}

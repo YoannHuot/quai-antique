@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateLogged, updateToken, checkValidation } from "./actions";
+import {
+	updateLogged,
+	updateToken,
+	checkValidation,
+	resetStore,
+} from "./actions";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -13,10 +18,10 @@ const useAuth = () => {
 	const [validation, setValidation] = useState();
 
 	const signup = async (e) => {
-		console.log(e);
 		await axios
 			.post("http://localhost:8000/users/index.php", { payload: e })
 			.then((response) => {
+				console.log(response);
 				if (response.data === "Success") {
 					dispatch(updateLogged(true));
 				} else {
@@ -30,20 +35,39 @@ const useAuth = () => {
 	};
 
 	const login = async (data) => {
-		// await axios
-		// 	.get("http://localhost:8000/users/current.php", { params: data })
-		// 	.then((response) => {
-		// 		if (response.data.jwt && response.data.jwt.length > 25) {
-		// 			dispatch(updateToken(true, response.data.jwt));
-		// 			Cookies.set("jwt", response.data.jwt, { expires: 7 });
-		// 		} else {
-		// 			setValidation(response.data.validation);
-		// 		}
-		// 	})
-		// 	.catch((error) => {
-		// 		setLoginResponse(response.data);
-		// 		console.log(error);
-		// 	});
+		console.log("login se déclenche");
+		await axios
+			.get("http://localhost:8000/users/login.php", { params: data })
+			.then((response) => {
+				console.log(response.data);
+				if (response.data.jwt) {
+					console.log(response.data);
+
+					let jwtObject = JSON.parse(response.data.jwt);
+					if (jwtObject.jwt && jwtObject.jwt.length > 25) {
+						dispatch(
+							updateToken(
+								true,
+								jwtObject.jwt,
+								response.data.name,
+								response.data.firstname,
+								response.data.allergies
+							)
+						);
+						Cookies.set("jwt", jwtObject.jwt, { expires: 7 });
+					} else {
+						setValidation(response.data.validation);
+					}
+				}
+			})
+			.catch((error) => {
+				// setLoginResponse(response.data);
+				console.log(error);
+			});
+	};
+
+	const logout = () => {
+		dispatch(resetStore());
 	};
 
 	const checkToken = async (data) => {
@@ -52,12 +76,7 @@ const useAuth = () => {
 			.get("http://localhost:8000/pages/homepage.php", { params: payload })
 			.then((response) => {
 				dispatch(
-					checkValidation(
-						response.data.validation,
-						response.data.role,
-						response.data.name,
-						response.data.firstname
-					)
+					checkValidation(response.data.name, response.data.firstname)
 				);
 			})
 			.catch((error) => {
@@ -71,6 +90,7 @@ const useAuth = () => {
 		response,
 		login,
 		checkToken,
+		logout,
 		// signup,
 	};
 };

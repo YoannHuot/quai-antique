@@ -22,15 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $allergyIds = implode(',', array_map('strval', $allergies));
             insertData($db, 'User', 'utilisateur', $nom, $email, $prenom, $city, $passwordHashed, $allergyIds);
         }
-        // if($isAdminSignIn === 1) { 
-        //     echo("wtf");
-        // }
-        // else { 
-        //     insertData($db, 'User', 'utilisateur', $nom, $email, $prenom, $city, $passwordHashed, $allergies);
-        // }
-
-        // if($registerAdminEmail($db, $email) === true) {
-        //     echo("ok l'admin làààà");
-        // } 
     }
 };
+

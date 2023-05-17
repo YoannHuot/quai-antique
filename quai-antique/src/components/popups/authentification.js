@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import _ from "underscore";
-import axios from "axios";
 
-// import { SubmitValid, SubmitUnvalid } from "../button/button";
 import { useRouter } from "next/router";
 import useAuth from "../../store/auth/hooks";
 import useDeviceType from "@/hooks/device-type";
 
-const Authentification = ({ selected }) => {
+const Authentification = ({ signIn, setAuthentification }) => {
 	const auth = useAuth();
 	const router = useRouter();
 	const deviceType = useDeviceType();
@@ -56,17 +54,35 @@ const Authentification = ({ selected }) => {
 	const [addressValidity, setAddressValidity] = useState(false);
 	const [dataValidity, setDataValidity] = useState(false);
 
+	const [hasSignIn, setHasSignIn] = useState(false);
+
+	let handleSubmit = (e) => {
+		e.preventDefault();
+
+		if (dataValidity && passwordValid) {
+			let data = {
+				nom: name,
+				prenom: firstName,
+				email: mail,
+				password: password,
+				passwordConfirm: passwordConfirm,
+				city: city,
+				address: address,
+				allergies: selectedAllergies,
+			};
+			auth.signup(data);
+		}
+	};
+
 	let resetSecurity = () => {
-		// setName('')
-		// setMail('')
-		// setFirstName('')
-		// setMessage("")
-		// setPassword("")
-		// setPasswordConfirm("")
-		// setCompagny('')
-		// setOtherValidity(false)
-		// setCandidatValidity(false)
-		// setResponse("")
+		setName("");
+		setMail("");
+		setFirstName("");
+		setMessage("");
+		setPassword("");
+		setPasswordConfirm("");
+		setAddress("");
+		setCity("");
 	};
 
 	useEffect(() => {
@@ -97,30 +113,15 @@ const Authentification = ({ selected }) => {
 		cityValidity,
 	]);
 
-	/*
-	 *
-	 * Refresh state when changing selection
-	 *
-	 */
 	useEffect(() => {
 		resetSecurity();
-	}, [selected]);
+	}, [signIn]);
 
-	/*
-	 * Check email validity
-	 *
-	 *
-	 */
 	useEffect(() => {
 		var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 		setMailValid(re.test(mail));
 	}, [mail]);
 
-	/*
-	 * Check name validity
-	 *
-	 *
-	 */
 	useEffect(() => {
 		let regex = new RegExp("^[a-zA-Z'-]+$");
 
@@ -186,9 +187,6 @@ const Authentification = ({ selected }) => {
 		}
 	}, [password, passwordConfirm]);
 
-	/*
-	 * Check Password security
-	 */
 	useEffect(() => {
 		const result = [];
 		if (password) {
@@ -202,18 +200,12 @@ const Authentification = ({ selected }) => {
 		setValidity(result);
 	}, [passwordValid, password]);
 
-	/*
-	 * Delete condition from array and from DOM
-	 */
 	useEffect(() => {
 		const allTrought = [];
 		_.map(condition, (c, i) => allTrought.push(i));
 		setChecked(_.difference(allTrought, validity));
 	}, [validity, password]);
 
-	/*
-	 * Update error message and security test
-	 */
 	useEffect(() => {
 		if (validity && validity.length === 5) {
 			setMessage("Sécurité");
@@ -222,9 +214,6 @@ const Authentification = ({ selected }) => {
 		}
 	}, [validity]);
 
-	/*
-	 * Update error message and security test
-	 */
 	useEffect(() => {
 		if (message && password) {
 			const severalMaj =
@@ -254,6 +243,14 @@ const Authentification = ({ selected }) => {
 	}, [message, password]);
 
 	useEffect(() => {
+		if (!auth.authStore.jwt || auth.authStore.jwt.length < 1) {
+			console.warn("Error 401 : no session token detected");
+		} else if (auth.authStore.jwt && auth.authStore.jwt.length > 1) {
+			setHasSignIn(true);
+		}
+	}, [auth.authStore]);
+
+	useEffect(() => {
 		if (!auth.authStore.logged) {
 			console.warn("User is not logged in!");
 		} else if (auth.authStore.logged) {
@@ -262,244 +259,264 @@ const Authentification = ({ selected }) => {
 	}, [auth.authStore.logged]);
 
 	useEffect(() => {
-		if (!auth.authStore.jwt || auth.authStore.jwt.length < 1) {
-			console.warn("Error 401 : no session token detected");
-		} else if (auth.authStore.jwt && auth.authStore.jwt.length > 1) {
-			router.push("/");
+		if (auth.authStore.logged === false) {
+			setHasSignIn(false);
 		}
-	}, [auth.authStore]);
-
-	let handleSubmit = (e) => {
-		if (dataValidity && passwordValid) {
-			let data = {
-				nom: name,
-				prenom: firstName,
-				email: mail,
-				password: password,
-				passwordConfirm: passwordConfirm,
-				city: city,
-				address: address,
-				allergies: selectedAllergies,
-			};
-			auth.signup(data);
-		}
-	};
-
-	useEffect(() => {
-		console.log(selectedAllergies);
-	}, [selectedAllergies]);
+	}, [auth.authStore.logged]);
 
 	return (
-		<div className=" w-full pt-6">
-			<div>
-				<div className="mb-4 flex justify-between items-center ">
-					<label className="w-1/2 ">Nom</label>
-					<div className="w-1/2 flex justify-end">
-						<input
-							value={name}
-							onChange={(e) => setName(e.target.value)}
-							className={`${inputStyle} ${
-								nameValidity ? "text-black" : "text-slate-400"
-							}`}
-						/>
+		<div className="w-full pt-6">
+			{hasSignIn ? (
+				<div className="flex flex-col">
+					<div className="py-2">
+						<span>Nom : </span>
+						<span className="capitalize">{auth.authStore.name}</span>
 					</div>
-				</div>
-				<div className="mb-4 flex justify-between items-center ">
-					<label className="w-1/2 ">Prénom</label>
-					<div className="w-1/2 flex justify-end">
-						<input
-							value={firstName}
-							onChange={(e) => setFirstName(e.target.value)}
-							className={`${inputStyle} ${
-								firstNameValidity ? "text-black" : "text-slate-400"
-							}`}
-						/>
+					<div className="py-2">
+						<span>Prénom : </span>
+						<span className="capitalize">{auth.authStore.firstname}</span>
 					</div>
-				</div>
-				<div className="mb-4 flex justify-between items-center ">
-					<label className="w-1/2 ">Email</label>
-					<div className="w-1/2 flex justify-end">
-						<input
-							value={mail}
-							onChange={(e) => setMail(e.target.value)}
-							className={`${inputStyle} ${
-								mailValid ? "text-black" : "text-slate-400"
-							}`}
-						/>
+					<div className="py-2">
+						<span>Allergies : </span>
+						<span>
+							{auth.authStore.allergies
+								? auth.authStore.allergies
+								: "Vous n'avez pas d'allergie"}
+						</span>
 					</div>
+					<button
+						onClick={() => {
+							setAuthentification(false);
+							setTimeout(() => {
+								auth.logout();
+							}, [300]);
+						}}
+						className={`${deviceType === "mobile" ? "w-28" : "w-40"} 
+							 bg-red-400 rounded-lg h-8 text-white my-4`}
+					>
+						<span>Déconnexion</span>
+					</button>
 				</div>
-				<div className="mb-4 flex justify-between items-center ">
-					<label className="w-1/2 ">
-						{deviceType === "mobile" ? "Mdp" : " Mot de passe"}
-					</label>
-					<div className="w-1/2 flex justify-end">
-						<input
-							type="password"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							className={inputStyle}
-						/>
-					</div>
-				</div>
-				<div className="mb-4 flex justify-between items-center ">
-					<label className="w-1/2 ">Confirmation</label>
-					<div className="w-1/2 flex justify-end">
-						<input
-							type="password"
-							value={passwordConfirm}
-							onChange={(e) => setPasswordConfirm(e.target.value)}
-							className={inputStyle}
-						/>
-					</div>
-				</div>
-				<div className="mb-4 flex justify-between items-center ">
-					<label className="w-1/2 ">Ville</label>
-					<div className="w-1/2 flex justify-end">
-						<input
-							value={city}
-							onChange={(e) => setCity(e.target.value)}
-							className={`${inputStyle} ${
-								cityValidity ? "text-black" : "text-slate-400"
-							}`}
-						/>
-					</div>
-				</div>
-				<div className="mb-4 flex justify-between items-center ">
-					<label className="w-1/2 ">Adresse</label>
-					<div className="w-1/2 flex justify-end">
-						<input
-							value={address}
-							onChange={(e) => setAddress(e.target.value)}
-							className={`${inputStyle} ${
-								addressValidity ? "text-black" : "text-slate-400"
-							}`}
-						/>
-					</div>
-				</div>
-				<div className="w-full mb-8  h-2/3 flex flex-col justify-center ">
-					<span>Sélectionnez vos allergies</span>
-					<div className="flex flew-row justify-between mt-4">
-						{_.map(allergies, (allergie, index) => {
-							let selected = selectedAllergies.includes(allergie.id);
-							return (
-								<button
-									key={index}
-									onClick={() => {
-										if (selected) {
-											setSelectedAllergies(
-												selectedAllergies.filter(
-													(e) => e !== allergie.id
-												)
-											);
-										} else {
-											setSelectedAllergies([
-												...selectedAllergies,
-												allergie.id,
-											]);
-										}
-									}}
-									className={`${
-										selected
-											? "border border-gold bg-primary"
-											: "bg-slate-400"
-									}  h-9 w-9 md:h-11 md:w-11 lg:h-12 lg:w-12 rounded-full flex justify-center items-center`}
-								>
-									<img src={allergie.img} alt={allergie.name} />
-								</button>
-							);
-						})}
-					</div>
-				</div>
-				<button
-					onClick={() => {
-						if (!dataValidity || !passwordValid) {
-							alert(
-								"les mots de passe ne correspondent pas ou informations manquantes"
-							);
-						} else handleSubmit();
-					}}
-					className={`${deviceType === "mobile" ? "w-28" : "w-40"} ${
-						dataValidity && passwordValid ? "bg-gold" : "bg-slate-300"
-					}  bg-gold rounded-lg h-8 text-white mb-4`}
-				>
-					Valider
-				</button>
-			</div>
-
-			<div className="w-full h-20 flex flex-col bg-app-blue bg-opacity-5 ">
-				{!message && !selected && (
-					<>
-						<p className="font-semibold">Mot de passe check </p>
-						<div className="grid grid-cols-3 gap-1 my-2 ">
-							{_.map(checked, (c, i) => {
-								return (
-									<div
-										key={i}
-										className="flex flew-row w-full  items-center"
-									>
-										<div className="w-2 h-2 bg-red-400 rounded-full" />
-										<p className="pl-2 capitalize">{c}</p>
-									</div>
-								);
-							})}
-						</div>
-					</>
-				)}
-				{message && !selected && (
-					<>
-						<p className="pb-2">{message}</p>
-						<div className="w-full h-6 rounded-full flex flex-row capitalize ">
-							<div className="flex flex-col h-6 w-1/3 justify-center items-center">
-								<div
-									className={`w-full h-1/2  border-blue border ${
-										security && security === "low"
-											? "bg-red-400"
-											: "bg-white"
-									} rounded-l-full`}
-								/>
-								{security && security === "low" ? (
-									<p className="h-1/2">low</p>
-								) : (
-									<div className="h-1/2" />
-								)}
-							</div>
-							<div className="flex flex-col h-6 w-1/3 justify-center items-center">
-								<div
-									className={`w-full h-1/2  border-blue border-t border-b ${
-										security && security === "medium"
-											? "bg-orange-400"
-											: "bg-white"
+			) : (
+				<div>
+					<form>
+						<div className="mb-4 flex justify-between items-center ">
+							<label className="w-1/2 ">Nom</label>
+							<div className="w-1/2 flex justify-end">
+								<input
+									value={name}
+									onChange={(e) => setName(e.target.value)}
+									className={`${inputStyle} ${
+										nameValidity ? "text-black" : "text-slate-400"
 									}`}
 								/>
-								{security && security === "medium" ? (
-									<p className="h-1/2">medium</p>
-								) : (
-									<div className="h-1/2" />
-								)}
-							</div>
-							<div className="flex flex-col h-6 w-1/3 justify-center items-center">
-								<div
-									className={`w-full h-1/2  border-blue border ${
-										security && security === "strong"
-											? "bg-green-400"
-											: "bg-white"
-									} rounded-r-full`}
-								/>
-								{security && security === "strong" ? (
-									<p className="h-1/2">strong</p>
-								) : (
-									<div className="h-1/2" />
-								)}
 							</div>
 						</div>
-						{response && (
+						<div className="mb-4 flex justify-between items-center ">
+							<label className="w-1/2 ">Prénom</label>
+							<div className="w-1/2 flex justify-end">
+								<input
+									value={firstName}
+									onChange={(e) => setFirstName(e.target.value)}
+									className={`${inputStyle} ${
+										firstNameValidity
+											? "text-black"
+											: "text-slate-400"
+									}`}
+								/>
+							</div>
+						</div>
+						<div className="mb-4 flex justify-between items-center ">
+							<label className="w-1/2 ">Email</label>
+							<div className="w-1/2 flex justify-end">
+								<input
+									value={mail}
+									onChange={(e) => setMail(e.target.value)}
+									className={`${inputStyle} ${
+										mailValid ? "text-black" : "text-slate-400"
+									}`}
+								/>
+							</div>
+						</div>
+						<div className="mb-4 flex justify-between items-center ">
+							<label className="w-1/2 ">
+								{deviceType === "mobile" ? "Mdp" : " Mot de passe"}
+							</label>
+							<div className="w-1/2 flex justify-end">
+								<input
+									type="password"
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
+									className={inputStyle}
+								/>
+							</div>
+						</div>
+						<div className="mb-4 flex justify-between items-center ">
+							<label className="w-1/2 ">Confirmation</label>
+							<div className="w-1/2 flex justify-end">
+								<input
+									type="password"
+									value={passwordConfirm}
+									onChange={(e) => setPasswordConfirm(e.target.value)}
+									className={inputStyle}
+								/>
+							</div>
+						</div>
+						<div className="mb-4 flex justify-between items-center ">
+							<label className="w-1/2 ">Ville</label>
+							<div className="w-1/2 flex justify-end">
+								<input
+									value={city}
+									onChange={(e) => setCity(e.target.value)}
+									className={`${inputStyle} ${
+										cityValidity ? "text-black" : "text-slate-400"
+									}`}
+								/>
+							</div>
+						</div>
+						<div className="mb-4 flex justify-between items-center ">
+							<label className="w-1/2 ">Adresse</label>
+							<div className="w-1/2 flex justify-end">
+								<input
+									value={address}
+									onChange={(e) => setAddress(e.target.value)}
+									className={`${inputStyle} ${
+										addressValidity ? "text-black" : "text-slate-400"
+									}`}
+								/>
+							</div>
+						</div>
+						<div className="w-full mb-8  h-2/3 flex flex-col justify-center ">
+							<span>Sélectionnez vos allergies</span>
+							<div className="flex flew-row justify-between mt-4">
+								{_.map(allergies, (allergie, index) => {
+									let selected = selectedAllergies.includes(
+										allergie.id
+									);
+									return (
+										<button
+											key={index}
+											onClick={(e) => {
+												e.preventDefault();
+												if (selected) {
+													setSelectedAllergies(
+														selectedAllergies.filter(
+															(e) => e !== allergie.id
+														)
+													);
+												} else {
+													setSelectedAllergies([
+														...selectedAllergies,
+														allergie.id,
+													]);
+												}
+											}}
+											className={`${
+												selected
+													? "border border-gold bg-primary"
+													: "bg-slate-400"
+											}  h-9 w-9 md:h-11 md:w-11 lg:h-12 lg:w-12 rounded-full flex justify-center items-center`}
+										>
+											<img src={allergie.img} alt={allergie.name} />
+										</button>
+									);
+								})}
+							</div>
+						</div>
+						<button
+							onClick={(e) => {
+								if (!dataValidity || !passwordValid) {
+									alert(
+										"les mots de passe ne correspondent pas ou informations manquantes"
+									);
+								} else handleSubmit(e);
+							}}
+							className={`${deviceType === "mobile" ? "w-28" : "w-40"} ${
+								dataValidity && passwordValid
+									? "bg-gold"
+									: "bg-slate-300"
+							}  bg-gold rounded-lg h-8 text-white mb-4`}
+						>
+							Valider
+						</button>
+					</form>
+
+					<div className="w-full h-20 flex flex-col bg-app-blue bg-opacity-5 ">
+						{!message && (
 							<>
-								<span className="mt-6">{response}</span>
+								<p className="font-semibold">Mot de passe check </p>
+								<div className="grid grid-cols-3 gap-1 my-2 ">
+									{_.map(checked, (c, i) => {
+										return (
+											<div
+												key={i}
+												className="flex flew-row w-full  items-center"
+											>
+												<div className="w-2 h-2 bg-red-400 rounded-full" />
+												<p className="pl-2 capitalize">{c}</p>
+											</div>
+										);
+									})}
+								</div>
 							</>
 						)}
-					</>
-				)}
-			</div>
+						{message && (
+							<>
+								<p className="pb-2">{message}</p>
+								<div className="w-full h-6 rounded-full flex flex-row capitalize ">
+									<div className="flex flex-col h-6 w-1/3 justify-center items-center">
+										<div
+											className={`w-full h-1/2  border-blue border ${
+												security && security === "low"
+													? "bg-red-400"
+													: "bg-white"
+											} rounded-l-full`}
+										/>
+										{security && security === "low" ? (
+											<p className="h-1/2">low</p>
+										) : (
+											<div className="h-1/2" />
+										)}
+									</div>
+									<div className="flex flex-col h-6 w-1/3 justify-center items-center">
+										<div
+											className={`w-full h-1/2  border-blue border-t border-b ${
+												security && security === "medium"
+													? "bg-orange-400"
+													: "bg-white"
+											}`}
+										/>
+										{security && security === "medium" ? (
+											<p className="h-1/2">medium</p>
+										) : (
+											<div className="h-1/2" />
+										)}
+									</div>
+									<div className="flex flex-col h-6 w-1/3 justify-center items-center">
+										<div
+											className={`w-full h-1/2  border-blue border ${
+												security && security === "strong"
+													? "bg-green-400"
+													: "bg-white"
+											} rounded-r-full`}
+										/>
+										{security && security === "strong" ? (
+											<p className="h-1/2">strong</p>
+										) : (
+											<div className="h-1/2" />
+										)}
+									</div>
+								</div>
+								{response && (
+									<>
+										<span className="mt-6">{response}</span>
+									</>
+								)}
+							</>
+						)}
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

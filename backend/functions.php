@@ -22,27 +22,27 @@ function getRequestDataBody()
 }
 
 // /*
-// * Récupération du user en cours en fonction de son rôle et de son adresse email. 
+// * Récupération du user en cours en fonction de son adresse email unique. 
 // */
-// function checkUserLogin($fetchBdd, $db, $role, $email, $password)
-// {
-//     if (array_key_exists($role, $fetchBdd)) {
-//         $request = $db->prepare($fetchBdd[$role]);
-//         $request->execute();
-//         $usersRole = $request->fetchAll();
+function checkUserLogin($db, $email, $password)
+{
+    $request = $db->prepare("SELECT * FROM User WHERE email = :email");
+    $request->execute(array(':email' => $email));
+
+    $user = $request->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['mdp'])) {
+        // Return user data as JSON
+        return $user;
+    } else {
+        // Return an error message as JSON
+        var_dump($user["mdp"]);
+        echo json_encode(array("error" => "Invalid login information"));
+    }
+}
 
 
-//         foreach ($usersRole as $index => $users) {
-//             if ($users["email"] === $email && password_verify($password, $users["password"])) {
-//                 return $users;
-//             }
-//         }
-//         echo ("Informations invalides");
-//     } else {
-//         var_dump($role);
-//         echo "role non valide";
-//     }
-// }
+
 
 /*
 * Vérification de la validité de l'email envoyé
@@ -95,8 +95,6 @@ function registerAdminEmail($db, $mail) {
         return "L'email fournie n'est pas une adresse email d'administrateur valide";
     }
 }
-
-
 
 /*
 * Encodage des données du token JWT

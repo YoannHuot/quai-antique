@@ -60,7 +60,7 @@ function insertData($db, $table, $profil, $nom, $email, $prenom, $city, $passwor
             $db->exec("insert into $table (profil, nom, email, prenom, ville, mdp, allergies) values ( '$profil', '$nom', '$email', '$prenom', '$city', '$password', '$allergies')");
     
         $db->commit();
-        echo "User $profil created";
+        echo "Success";
     } catch (Exception $e) {
         $db->rollBack();
         echo "Failed: " . $e->getMessage();

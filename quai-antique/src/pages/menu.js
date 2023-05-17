@@ -5,7 +5,7 @@ import useDeviceType from "@/hooks/device-type";
 import MenuHeader from "@/components/footer-header/menu-header";
 import PopUp from "@/components/popups/popup";
 import PopUpContentResa from "../components/popups/wrapper-resa";
-import PopUpContentAuth from "../components/popups/popup-content-auth.js";
+// import PopUpContentAuth from "../components/popups/popup-content-auth.js";
 import CardMenu from "@/components/cards/card-menu";
 import Footer from "@/components/footer-header/footer";
 
@@ -460,7 +460,7 @@ const Menu = () => {
 						<img src="/images/back-button.png" className="w-6 h-6" />
 					</button>
 				</header>
-				<PopUpContentAuth />
+				{/* <PopUpContentAuth /> */}
 			</PopUp>
 		</main>
 	);

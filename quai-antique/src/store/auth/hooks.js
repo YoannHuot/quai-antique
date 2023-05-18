@@ -21,7 +21,6 @@ const useAuth = () => {
 		await axios
 			.post("http://localhost:8000/users/index.php", { payload: e })
 			.then((response) => {
-				console.log(response);
 				if (response.data === "Success") {
 					dispatch(updateLogged(true));
 				} else {
@@ -41,8 +40,6 @@ const useAuth = () => {
 			.then((response) => {
 				console.log(response.data);
 				if (response.data.jwt) {
-					console.log(response.data);
-
 					let jwtObject = JSON.parse(response.data.jwt);
 					if (jwtObject.jwt && jwtObject.jwt.length > 25) {
 						dispatch(

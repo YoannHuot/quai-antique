@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import _ from "underscore";
 import SelectedHours from "@/components/selected-hours.js";
 import SelectedDays from "@/components/selected-days.js";
 import useDeviceType from "@/hooks/device-type";
 import useAuth from "@/store/auth/hooks";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const FooterPopup = ({ onPress1, onPress2, text1, text2 }) => {
 	const deviceType = useDeviceType();
@@ -99,54 +101,158 @@ const Reservation = ({ setIndex }) => {
 	const deviceType = useDeviceType();
 
 	const [selectedDate, setSelectedDate] = useState(new Date());
-	const [selectedAllergies, setSelectedAllergies] = useState([]);
-	const allergies = [
-		{ alt: "abalone", img: "/images/allergies/abalone.svg", id: 1 },
-		{ alt: "apple", img: "/images/allergies/apple.svg", id: 2 },
-		{ alt: "eggs", img: "/images/allergies/eggs.svg", id: 3 },
-		{ alt: "fish", img: "/images/allergies/fish.svg", id: 4 },
-		{ alt: "soy-bean", img: "/images/allergies/soy-bean.svg", id: 5 },
-		{ alt: "wheat", img: "/images/allergies/wheat.svg", id: 6 },
-	];
+
+	const [formattedDate, setFormattedDate] = useState("");
+	const [selectedHours, setSelectedHours] = useState("12:00");
+	const [guests, setGuests] = useState("1");
+
+	const [confirm, setConfirm] = useState(false);
+	const [message, setMessage] = useState("");
+
+	useEffect(() => {
+		const year = selectedDate.getFullYear();
+		const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
+		const day = selectedDate.getDate().toString().padStart(2, "0");
+
+		setFormattedDate(`${year}-${month}-${day}`);
+	}, [selectedDate]);
+
+	const handleConfirm = () => {
+		if (formattedDate && guests && selectedHours) {
+			setConfirm(true);
+		}
+	};
+
+	const handleSubmit = async () => {
+		if (formattedDate && guests && selectedHours) {
+			const cookie = Cookies.get("jwt");
+			await axios
+				.post("http://localhost:8000/reservations/index.php", {
+					token: cookie,
+					formattedDate: formattedDate,
+					guests: guests,
+					selectedHours: selectedHours,
+				})
+				.then((response) => {
+					console.log(response);
+					setMessage(response.data);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
+	};
 
 	return (
-		<div className="w-full pt-6 flex flex-col h-full justify-between">
-			<div>
-				<SelectedDays
-					selectedDate={selectedDate}
-					setSelectedDate={setSelectedDate}
-				/>
-				<SelectedHours
-					selectedDate={selectedDate}
-					setSelectedDate={setSelectedDate}
-				/>
-				<div className="mb-4 flex justify-between items-center ">
-					<label className="w-1/2">Convives</label>
-					<div className="w-1/2 flex justify-end">
-						<select className="border border-black w-40 md:w-52 h-8 rounded-lg bg-primary text-white font-semibold pl-2">
-							{[...Array(12)].map((_, i) => (
-								<option key={i} value={i + 1}>
-									{i + 1}
-								</option>
-							))}
-						</select>
-					</div>
+		<>
+			{message ? (
+				<div className="flex w-full h-full">
+					<span className="text-base pt-4">
+						{message.split(".").map((sentence, index) => (
+							<React.Fragment key={index}>
+								{sentence}
+								<br />
+								<br />
+							</React.Fragment>
+						))}
+					</span>
 				</div>
-			</div>
+			) : (
+				<>
+					{confirm ? (
+						<div className="w-full pt-6 flex flex-col h-full justify-between">
+							<div className="flex flex-col">
+								<div className="my-4 text-lg">
+									<span>Nombre de convives : </span>
+									<span className="font-bold text-lg text-primary">
+										{guests}
+									</span>
+								</div>
+								<div className="my-4 text-lg">
+									<span>Jour de la réservation : </span>
+									<span className="font-bold text-lg text-primary">
+										{formattedDate}
+									</span>
+								</div>
+								<div className="my-4 text-lg">
+									<span>Heure de la réservation : </span>
+									<span className="font-bold text-lg text-primary">
+										{selectedHours}
+									</span>
+								</div>
+							</div>
+							<footer className="h-16 flex flex-row justify-between">
+								<button
+									className={`${
+										deviceType === "mobile" ? "w-32" : "w-40"
+									}  bg-primary rounded-lg h-8 text-white`}
+									onClick={() => {
+										setConfirm(false);
+									}}
+								>
+									<span>Retour</span>
+								</button>
+								<button
+									className={`${
+										deviceType === "mobile" ? "w-32" : "w-40"
+									}  bg-gold rounded-lg h-8 text-white`}
+									onClick={() => {
+										handleSubmit();
+									}}
+								>
+									<span>Valider</span>
+								</button>
+							</footer>
+						</div>
+					) : (
+						<div className="w-full pt-6 flex flex-col h-full justify-between">
+							<div>
+								<SelectedDays
+									selectedDate={selectedDate}
+									setSelectedDate={setSelectedDate}
+								/>
+								<SelectedHours
+									selectedDate={selectedDate}
+									selectedHours={selectedHours}
+									setSelectedDate={setSelectedDate}
+									setSelectedHours={setSelectedHours}
+								/>
+								<div className="mb-4 flex justify-between items-center ">
+									<label className="w-1/2">Convives</label>
+									<div className="w-1/2 flex justify-end">
+										<select
+											className="border border-black w-40 md:w-52 h-8 rounded-lg bg-primary text-white font-semibold pl-2"
+											onChange={(e) => {
+												setGuests(e.target.value);
+											}}
+										>
+											{[...Array(59)].map((_, i) => (
+												<option key={i} value={i + 1}>
+													{i + 1}
+												</option>
+											))}
+										</select>
+									</div>
+								</div>
+							</div>
 
-			<footer className="h-16">
-				<button
-					className={`${
-						deviceType === "mobile" ? "w-32" : "w-40"
-					}  bg-gold rounded-lg h-8 text-white`}
-					onClick={() => {
-						setIndex(3);
-					}}
-				>
-					<span>Continuer</span>
-				</button>
-			</footer>
-		</div>
+							<footer className="h-16">
+								<button
+									className={`${
+										deviceType === "mobile" ? "w-32" : "w-40"
+									}  bg-gold rounded-lg h-8 text-white`}
+									onClick={() => {
+										handleConfirm();
+									}}
+								>
+									<span>Continuer</span>
+								</button>
+							</footer>
+						</div>
+					)}
+				</>
+			)}
+		</>
 	);
 };
 
@@ -185,7 +291,6 @@ const WrapperResa = ({ setSignIn, setOpen, setAuthentification }) => {
 	const auth = useAuth();
 	const [index, setIndex] = useState(1);
 
-	console.log(auth.authStore.logged);
 	const content = () => {
 		switch (index) {
 			case 1:

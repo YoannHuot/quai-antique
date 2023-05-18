@@ -48,22 +48,20 @@ const Footer = ({ menu }) => {
 							Horaires
 						</h3>
 
-						{Object.values(schedule.weekSchedule).map(
-							(schedule, index) => (
+						{Object.entries(schedule.weekSchedule).map(
+							([day, openHours], index) => (
 								<div
 									key={index}
 									className="flex flex-row w-full justify-between"
 								>
-									<p className="text-start w-1/2 xs:ml-6  md:ml-0 ">
-										{schedule.day}
+									<p className="text-start w-1/2 xs:ml-6 md:ml-0">
+										{day}
 									</p>
-									<p className="text-start w-1/2 ">
-										{schedule.openHours.map((hours, i) => (
+									<p className="text-start w-1/2">
+										{openHours.map((hours, i) => (
 											<span key={i}>
 												{hours[0]}-{hours[1]}
-												{i < schedule.openHours.length - 1
-													? " / "
-													: ""}
+												{i < openHours.length - 1 ? " / " : ""}
 											</span>
 										))}
 									</p>

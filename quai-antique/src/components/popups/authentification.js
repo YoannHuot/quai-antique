@@ -4,6 +4,8 @@ import _ from "underscore";
 import { useRouter } from "next/router";
 import useAuth from "../../store/auth/hooks";
 import useDeviceType from "@/hooks/device-type";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 const Authentification = ({ signIn, setAuthentification }) => {
 	const auth = useAuth();
@@ -55,6 +57,24 @@ const Authentification = ({ signIn, setAuthentification }) => {
 	const [dataValidity, setDataValidity] = useState(false);
 
 	const [hasSignIn, setHasSignIn] = useState(false);
+	const [resa, setResa] = useState();
+
+	let deleteResa = () => {
+		const cookie = Cookies.get("jwt");
+		axios
+			.delete("http://localhost:8000/reservations/index.php", {
+				params: {
+					token: cookie,
+				},
+			})
+			.then((response) => {
+				console.log(response.data);
+				setAuthentification(false);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
 
 	let handleSubmit = (e) => {
 		e.preventDefault();
@@ -264,38 +284,85 @@ const Authentification = ({ signIn, setAuthentification }) => {
 		}
 	}, [auth.authStore.logged]);
 
+	useEffect(() => {
+		if (auth.authStore.logged) {
+			const cookie = Cookies.get("jwt");
+			axios
+				.get("http://localhost:8000/reservations/index.php", {
+					params: {
+						token: cookie,
+					},
+				})
+				.then((response) => {
+					console.log(response);
+					setResa(response.data);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
+	}, []);
+
 	return (
 		<div className="w-full pt-6">
 			{hasSignIn ? (
-				<div className="flex flex-col">
-					<div className="py-2">
-						<span>Nom : </span>
-						<span className="capitalize">{auth.authStore.name}</span>
-					</div>
-					<div className="py-2">
-						<span>Prénom : </span>
-						<span className="capitalize">{auth.authStore.firstname}</span>
-					</div>
-					<div className="py-2">
-						<span>Allergies : </span>
-						<span>
-							{auth.authStore.allergies
-								? auth.authStore.allergies
-								: "Vous n'avez pas d'allergie"}
-						</span>
-					</div>
-					<button
-						onClick={() => {
-							setAuthentification(false);
-							setTimeout(() => {
-								auth.logout();
-							}, [300]);
-						}}
-						className={`${deviceType === "mobile" ? "w-28" : "w-40"} 
+				<div className="w-full flex flex-row">
+					<div className="flex flex-col w-1/2 border-r border-black">
+						<div className="py-2">
+							<span>Nom : </span>
+							<span className="capitalize">{auth.authStore.name}</span>
+						</div>
+						<div className="py-2">
+							<span>Prénom : </span>
+							<span className="capitalize">
+								{auth.authStore.firstname}
+							</span>
+						</div>
+						<div className="py-2">
+							<span>Allergies : </span>
+							<span>
+								{auth.authStore.allergies
+									? auth.authStore.allergies
+									: "Vous n'avez pas d'allergie"}
+							</span>
+						</div>
+						<button
+							onClick={() => {
+								setAuthentification(false);
+								setTimeout(() => {
+									auth.logout();
+								}, [300]);
+							}}
+							className={`${deviceType === "mobile" ? "w-28" : "w-40"} 
 							 bg-red-400 rounded-lg h-8 text-white my-4`}
-					>
-						<span>Déconnexion</span>
-					</button>
+						>
+							<span>Déconnexion</span>
+						</button>
+					</div>
+					{resa && (
+						<div className="flex flex-col w-1/2 pl-4 py-2">
+							<span>Votre réservation :</span>
+							<div className="py-2">
+								<span>Couvert(s) : </span>
+								<span className="capitalize">{resa.guests}</span>
+							</div>
+							<div className="py-2">
+								<span>Date : </span>
+								<span className="capitalize">{resa.dateTime}</span>
+							</div>
+							<button
+								onClick={() => {
+									deleteResa();
+								}}
+								className={`${
+									deviceType === "mobile" ? "w-28" : "w-40"
+								} 
+							 bg-primary rounded-lg h-8 text-white my-4`}
+							>
+								<span>Annuler</span>
+							</button>
+						</div>
+					)}
 				</div>
 			) : (
 				<div>

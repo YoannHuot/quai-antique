@@ -10,9 +10,11 @@ import Authentification from "@/components/popups/authentification";
 import Footer from "@/components/footer-header/footer";
 import Login from "@/components/popups/login";
 import useAuth from "@/store/auth/hooks";
+import useDeviceType from "@/hooks/device-type";
 
 export default function Home() {
 	const auth = useAuth();
+	const device = useDeviceType();
 	const texts = ["73000, rue de Boigne", "Chambéry", "par Arnaud Michant"];
 	const menu = ["Le menu", "Arnaud Michant", "Connexion"];
 
@@ -47,7 +49,6 @@ export default function Home() {
 
 	const [footerWidth, setFooterWidth] = useState("");
 	const [open, setOpen] = useState(false);
-	const [isMobile, setIsmobile] = useState(false);
 	const [authentification, setAuthentification] = useState(false);
 	const [signIn, setSignIn] = useState(false);
 
@@ -68,9 +69,6 @@ export default function Home() {
 	useEffect(() => {
 		const handleResize = () => {
 			setFooterWidth(mainRef.current.offsetWidth - 64);
-			if (mainRef.current.offsetWidth < 768) {
-				setIsmobile(true);
-			} else setIsmobile(false);
 		};
 
 		if (mainRef.current) {
@@ -162,7 +160,7 @@ export default function Home() {
 									);
 								})}
 							</div>
-							{!isMobile && (
+							{device === "desktop" && (
 								<div className="relative border-2 border-black rounded-full w-9 h-16 ">
 									<div className="round-bounce round absolute top-2 left-3 transform -translate-x-1/2  bg-black w-2 h-2 rounded-full "></div>
 								</div>
@@ -219,7 +217,7 @@ export default function Home() {
 						<div className="informations h-full w-full lg:w-1/2 flex items-center ">
 							<div className="h-full w-full overflow-hidden relative z-20">
 								<img
-									className="lg:absolute top-0 left-0 object-cover w-full h-full"
+									className="lg:absolute top-0 left-0 object-cover w-full h-96 lg:h-full"
 									src="images/chief.jpg"
 									ref={chiefImageRef}
 								/>

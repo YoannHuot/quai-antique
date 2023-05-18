@@ -4,6 +4,7 @@ import axios from "axios";
 const useSchedule = () => {
 	const [fetchSchedule, setFetchSchedule] = useState("");
 	const [weekSchedule, setWeekSchedules] = useState("");
+	const [numDays, setNumDays] = useState("");
 
 	useEffect(() => {
 		const fetchOpeningHours = async () => {
@@ -60,13 +61,65 @@ const useSchedule = () => {
 						),
 					};
 				}
-				return nouvelHoraires;
+
+				const newWeekScheduleObject = Object.values(nouvelHoraires).reduce(
+					(acc, curr) => {
+						acc[curr.day] = curr.openHours;
+						return acc;
+					},
+					{}
+				);
+
+				return newWeekScheduleObject;
 			};
+
 			setWeekSchedules(transformData(fetchSchedule));
 		}
 	}, [fetchSchedule]);
 
-	return { weekSchedule };
+	useEffect(() => {
+		const daysOff = [];
+		const convertDayToNumber = (day) => {
+			switch (day) {
+				case "Dimanche":
+					return 0;
+				case "Lundi":
+					return 1;
+				case "Mardi":
+					return 2;
+				case "Mercredi":
+					return 3;
+				case "Jeudi":
+					return 4;
+				case "Vendredi":
+					return 5;
+				case "Samedi":
+					return 6;
+				default:
+					return -1; // Valeur par défaut pour les jours non reconnus
+			}
+		};
+		const getDayWithAllNullValues = (weekSchedule) => {
+			for (const day in weekSchedule) {
+				const openHours = weekSchedule[day];
+				const hasAllNullValues = openHours.every((hours) =>
+					hours.every((value) => value === null)
+				);
+				if (hasAllNullValues) {
+					daysOff.push(day);
+				}
+			}
+			return null;
+		};
+
+		getDayWithAllNullValues(weekSchedule);
+		if (daysOff.length > 0) {
+			const convertDayToNum = daysOff.map((day) => convertDayToNumber(day));
+			setNumDays(convertDayToNum);
+		}
+	}, [weekSchedule]);
+
+	return { weekSchedule, numDays };
 };
 
 export default useSchedule;

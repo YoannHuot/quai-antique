@@ -35,7 +35,7 @@ const Header = ({
 		{
 			text: "mon profil",
 			onPress: () => {
-				hasSignIn ? setAuthentification(true) : setAuthentification(true);
+				setAuthentification(true);
 				setHasSignIn(false);
 			},
 		},

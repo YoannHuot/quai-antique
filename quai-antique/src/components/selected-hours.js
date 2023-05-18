@@ -1,86 +1,82 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import useSchedule from "@/hooks/schedule";
 
-const weekSchedule = [
-	{ day: "Sunday", openHours: [] },
-	{
-		day: "Monday",
-		openHours: [
-			["11:00", "15:00"],
-			["18:00", "22:00"],
-		],
-	},
-	{
-		day: "Tuesday",
-		openHours: [
-			["11:00", "15:00"],
-			["18:00", "22:00"],
-		],
-	},
-	{
-		day: "Wednesday",
-		openHours: [
-			["11:00", "15:00"],
-			["18:00", "22:00"],
-		],
-	},
-	{
-		day: "Thursday",
-		openHours: [
-			["11:00", "15:00"],
-			["18:00", "22:00"],
-		],
-	},
-	{
-		day: "Friday",
-		openHours: [
-			["11:00", "15:00"],
-			["18:00", "22:00"],
-		],
-	},
-	{ day: "Saturday", openHours: [["09:00", "22:00"]] },
-];
-
-const SelectedHours = ({ selectedDate }) => {
+const SelectedHours = ({ selectedDate, setSelectedHours, selectedHours }) => {
+	const { weekSchedule } = useSchedule();
 	const [timeOptions, setTimeOptions] = useState([]);
-	const [weekSchedules, setWeekSchedules] = useState();
+	const [selectedTime, setSelectedTime] = useState("12:00");
 
 	useEffect(() => {
-		const dayOfWeek = selectedDate.getDay();
-		const openHours = weekSchedule[dayOfWeek].openHours;
-
-		console.log(dayOfWeek);
+		const daysOfWeek = [
+			"Dimanche",
+			"Lundi",
+			"Mardi",
+			"Mercredi",
+			"Jeudi",
+			"Vendredi",
+			"Samedi",
+		];
+		const dayOfWeek = daysOfWeek[selectedDate.getDay()];
+		const openHours = weekSchedule[dayOfWeek];
+		const today = new Date();
 		const options = [];
-		openHours.forEach((range) => {
-			const [start, end] = range;
-			let [startHour, startMinute] = start.split(":").map(Number);
-			const [endHour, endMinute] = end.split(":").map(Number);
+		if (openHours && openHours.length > 0) {
+			openHours.forEach((hours) => {
+				const [start, end] = hours;
+				const [startHour, startMinute] = start.split(":").map(Number);
+				const [endHour, endMinute] = end.split(":").map(Number);
 
-			while (
-				startHour < endHour ||
-				(startHour === endHour && startMinute < endMinute)
-			) {
-				options.push(
-					`${startHour.toString().padStart(2, "0")}:${startMinute
+				let currentHour = startHour;
+				let currentMinute = startMinute;
+
+				while (
+					currentHour < endHour ||
+					(currentHour === endHour && currentMinute < endMinute)
+				) {
+					const time = `${currentHour
 						.toString()
-						.padStart(2, "0")}`
-				);
-				startMinute += 30;
-				if (startMinute === 60) {
-					startHour += 1;
-					startMinute = 0;
+						.padStart(2, "0")}:${currentMinute
+						.toString()
+						.padStart(2, "0")}`;
+
+					// si la date sélectionnée est la date du jour, vérifier que l'heure actuelle est antérieure à l'heure courante
+					if (
+						selectedDate.getDate() === today.getDate() &&
+						selectedDate.getMonth() === today.getMonth() &&
+						selectedDate.getFullYear() === today.getFullYear() &&
+						(currentHour < today.getHours() ||
+							(currentHour === today.getHours() &&
+								currentMinute <= today.getMinutes()))
+					) {
+						// ne rien faire si l'heure est déjà passée
+					} else {
+						options.push(time);
+					}
+
+					currentMinute += 30;
+					if (currentMinute >= 60) {
+						currentMinute = currentMinute % 60;
+						currentHour++;
+					}
 				}
-			}
-		});
+			});
+		}
 
 		setTimeOptions(options);
-	}, [selectedDate]);
+	}, [selectedDate, weekSchedule]);
 
 	return (
-		<div className="mb-4 flex justify-between items-center ">
-			<label className="w-1/2 ">Heure</label>
+		<div className="mb-4 flex justify-between items-center">
+			<label className="w-1/2">Heure</label>
 			<div className="w-1/2 flex justify-end">
-				<select className="border border-black w-40 md:w-52 h-8 rounded-lg bg-primary text-white font-semibold pl-2">
+				<select
+					className="border border-black w-40 md:w-52 h-8 rounded-lg bg-primary text-white font-semibold pl-2"
+					value={selectedHours}
+					onChange={(e) => {
+						setSelectedHours(e.target.value);
+					}}
+				>
 					{timeOptions.map((time, index) => (
 						<option key={index} value={time}>
 							{time}

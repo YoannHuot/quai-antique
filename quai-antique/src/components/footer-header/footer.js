@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useDeviceType from "@/hooks/device-type";
+import useSchedule from "@/hooks/schedule";
+import axios from "axios";
 
 const Footer = ({ menu }) => {
 	const deviceType = useDeviceType();
+	const schedule = useSchedule();
 
 	return (
 		<footer
@@ -44,31 +47,29 @@ const Footer = ({ menu }) => {
 						<h3 className="font-bold lg:mb-4 mb-1 text-center">
 							Horaires
 						</h3>
-						<div className="flex flex-row w-full justify-between">
-							<p className="text-start w-1/2 xs:ml-20  md:ml-16 lg:ml-20 xl:ml-32">
-								Lundi...
-							</p>
-							<p className="text-start w-1/2 ml-8 ">14h-19h</p>
-						</div>
 
-						<div className="flex flex-row w-full justify-between">
-							<p className="text-start w-1/2  xs:ml-20 md:ml-16 lg:ml-20 xl:ml-32">
-								Mardi...
-							</p>
-							<p className="text-start w-1/2 ml-8">9h-12h / 14h-19h</p>
-						</div>
-						<div className="flex flex-row w-full justify-between">
-							<p className="text-start w-1/2  xs:ml-20 md:ml-16 lg:ml-20 xl:ml-32">
-								Samedi...
-							</p>
-							<p className="text-start w-1/2 ml-8">9h-19h</p>
-						</div>
-						<div className="flex flex-row w-full justify-between">
-							<p className="text-start w-1/2  xs:ml-20 md:ml-16 lg:ml-20 xl:ml-32">
-								Dimanche...
-							</p>
-							<p className="text-start w-1/2 ml-8">Fermé</p>
-						</div>
+						{Object.values(schedule.weekSchedule).map(
+							(schedule, index) => (
+								<div
+									key={index}
+									className="flex flex-row w-full justify-between"
+								>
+									<p className="text-start w-1/2 xs:ml-6  md:ml-0 ">
+										{schedule.day}
+									</p>
+									<p className="text-start w-1/2 ">
+										{schedule.openHours.map((hours, i) => (
+											<span key={i}>
+												{hours[0]}-{hours[1]}
+												{i < schedule.openHours.length - 1
+													? " / "
+													: ""}
+											</span>
+										))}
+									</p>
+								</div>
+							)
+						)}
 					</div>
 
 					<div className="col-span-1 flex justify-center flex-col items-center">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const weekSchedule = [
 	{ day: "Sunday", openHours: [] },
@@ -42,6 +43,7 @@ const weekSchedule = [
 
 const SelectedHours = ({ selectedDate }) => {
 	const [timeOptions, setTimeOptions] = useState([]);
+	const [weekSchedules, setWeekSchedules] = useState();
 
 	useEffect(() => {
 		const dayOfWeek = selectedDate.getDay();

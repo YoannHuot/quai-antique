@@ -29,7 +29,7 @@ try {
 
     $db->exec("
     CREATE TABLE IF NOT EXISTS User (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         profil ENUM('administrateur', 'utilisateur'),
         nom VARCHAR(50),
         email VARCHAR(50),
@@ -62,31 +62,41 @@ try {
         )");
 
     
+   
     $db->exec("
         CREATE TABLE IF NOT EXISTS ProductsPhare (
             id INT AUTO_INCREMENT PRIMARY KEY,
             titre VARCHAR(50),
             photo VARCHAR(255)
         )");
-
-    
+ 
+        
     $db->exec("
-        CREATE TABLE IF NOT EXISTS Horaires (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            jour ENUM('lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'),
-            heure_ouverture TIME,
-            heure_fermeture TIME
+        CREATE TABLE IF NOT EXISTS DaysOpen (
+            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            dayOfWeek INT(1) UNSIGNED NOT NULL  
         )");
 
     
     $db->exec("
-    CREATE TABLE IF NOT EXISTS Tables (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        nb_couvert INT,
-        disponibilite ENUM('disponible', 'non disponible'),
-        horaire_id INT,
-        FOREIGN KEY (horaire_id) REFERENCES Horaires(id)
+    CREATE TABLE IF NOT EXISTS OpeningHours (
+        id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        dayOfWeek INT(1) UNSIGNED NOT NULL, 
+        shift ENUM('AM', 'PM', 'FULL', 'CLOSED') NOT NULL,
+        openingTime TIME,
+        closingTime TIME
     )");
+
+    $db->exec("
+    CREATE TABLE IF NOT EXISTS Reservations (
+        id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        userID INT UNSIGNED,
+        dateTime DATETIME NOT NULL,
+        reg_date TIMESTAMP,
+        FOREIGN KEY (userID) REFERENCES User(id)
+    )");
+    
+
 
     // On est maintenant connecté
 } catch (PDOException $e) {

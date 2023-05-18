@@ -7,6 +7,7 @@ import PopUp from "@/components/popups/popup.js";
 import WrapperResa from "@/components/popups/wrapper-resa.js";
 import Header from "@/components/footer-header/header";
 import Authentification from "@/components/popups/authentification";
+import Footer from "@/components/footer-header/footer";
 import Login from "@/components/popups/login";
 import useAuth from "@/store/auth/hooks";
 
@@ -184,13 +185,13 @@ export default function Home() {
 					<h2 className="font-Libre font-medium italic text-2xl py-4">
 						Nos plats signatures
 					</h2>
-					<div className="w-full h-full flex flex-row   card-container">
+					<div className="w-full h-full flex lg:flex-row card-container xs:flex-col">
 						{_.map(images, (image, index) => {
 							return (
 								<div
 									key={index}
-									className={`rounded-xl h-4/5 w-full flex-1 card overflow-hidden ${
-										index < images.length - 1 ? "mr-1" : ""
+									className={`lg:rounded-xl h-4/5 w-full flex-1 card overflow-hidden mt-4 ${
+										index < images.length - 1 ? "lg:mr-1" : ""
 									}`}
 								>
 									<div
@@ -199,8 +200,8 @@ export default function Home() {
 											backgroundImage: `url(${image.img})`,
 										}}
 									>
-										<div className="absolute bottom-0 z-10 w-full h-1/4 bg-gradient-to-t from-black via-black to-transparent opacity-50" />
-										<span className="relative z-20 text-3xl capitalize text-white font-Libre font-semibold h-40 text-center flex justify-center items-center">
+										<div className="absolute bottom-0 z-10 w-full h-full lg:h-1/4 bg-gradient-to-t from-black via-black to-transparent opacity-50" />
+										<span className="relative z-20 text-2xl lg:text-3xl capitalize text-white font-Libre font-semibold h-40 text-center flex justify-center items-center">
 											{image.title}
 										</span>
 									</div>
@@ -210,23 +211,23 @@ export default function Home() {
 					</div>
 				</section>
 
-				<section className="third-section relative flex flex-col w-full h-screen -mt-24">
+				<section className="third-section relative flex flex-col w-full h-full lg:h-screen mt-24  lg:-mt-24">
 					<h2 className="font-Libre font-medium italic text-2xl pb-4">
 						Le chef Arnaud Michant
 					</h2>
-					<div className="flex flex-row">
-						<div className="informations h-full w-1/2 flex items-center  ">
+					<div className="flex flex-col lg:flex-row w-full">
+						<div className="informations h-full w-full lg:w-1/2 flex items-center ">
 							<div className="h-full w-full overflow-hidden relative z-20">
 								<img
-									className="absolute top-0 left-0 object-cover w-full h-full"
+									className="lg:absolute top-0 left-0 object-cover w-full h-full"
 									src="images/chief.jpg"
 									ref={chiefImageRef}
 								/>
 							</div>
 						</div>
-						<div className="chief-descripton h-full w-1/2 text-center flex flex-row justify-evenly items-center ">
-							<div className="w-52 ">
-								<span className="font-Laila text-lg">
+						<div className="chief-descripton h-full w-full lg:w-1/2  flex  flex-col lg:flex-row lg:justify-evenly  ">
+							<div className="w-full lg:w-52 ">
+								<span className="font-Laila text-base lg:text-lg">
 									Pellentesque nec finibus sem, ac facilisis erat.
 									Fusce elementum dui a eros malesuada, fermentum
 									volutpat mi mollis. Aliquam eu purus in ligula
@@ -239,8 +240,8 @@ export default function Home() {
 									ligula ipsum.
 								</span>
 							</div>
-							<div className="w-52 mt-96">
-								<span className="font-Laila text-lg">
+							<div className="w-full lg:w-52 lg:mt-96">
+								<span className="font-Laila text-base lg:text-lg">
 									Pellentesque nec finibus sem, ac facilisis erat.
 									Fusce elementum dui a eros malesuada, fermentum
 									volutpat mi mollis. Aliquam eu purus in ligula
@@ -258,63 +259,7 @@ export default function Home() {
 				</section>
 			</div>
 
-			<footer className="bg-white w-full font-Laila">
-				<div className="flex w-full">
-					<div className="flex-shrink-0 flex-col flex ">
-						<span className="font-Libre italic">Le Quai Antique</span>
-						<div className="flex flex-row  items-center justify-start">
-							<img
-								className="object-contain object-center w-20 h-20"
-								src="images/logo-picto.png"
-								alt="Logo"
-							/>
-							<span className="w-4 leading-8 text-lg">
-								Arnaud Michant
-							</span>
-						</div>
-					</div>
-					<div className="grid grid-cols-4 gap-8 pl-8 w-full">
-						<div className="col-span-1">
-							<h3 className="font-bold mb-4 text-center">Adresse</h3>
-							<p className="text-center">73000</p>
-							<p className="text-center">14 rue de Boigne</p>
-							<p className="text-center">Chambèry</p>
-						</div>
-
-						<div className="col-span-2">
-							<h3 className="font-bold mb-4 text-center">Horaires</h3>
-							<div className="flex flex-row w-full justify-between">
-								<p className="text-start w-1/2 ml-8">Lundi...</p>
-								<p className="text-start w-1/2 ml-8 ">14h-19h</p>
-							</div>
-
-							<div className="flex flex-row w-full justify-between">
-								<p className="text-start w-1/2 ml-8">Mardi...</p>
-								<p className="text-start w-1/2 ml-8">
-									9h-12h / 14h-19h{" "}
-								</p>
-							</div>
-							<div className="flex flex-row w-full justify-between">
-								<p className="text-start w-1/2 ml-8">Samedi...</p>
-								<p className="text-start w-1/2 ml-8">9h-19h</p>
-							</div>
-							<div className="flex flex-row w-full justify-between">
-								<p className="text-start w-1/2 ml-8">Dimanche...</p>
-								<p className="text-start w-1/2 ml-8">Fermé</p>
-							</div>
-						</div>
-
-						<div className="col-span-1 flex justify-center flex-col items-center">
-							<h3 className="font-bold mb-4 text-center">Réserver</h3>
-							<p className="text-center">01 41 40 42 45</p>
-							<img
-								src="images/CTA.png"
-								className="w-20 h-20 text-center"
-							/>
-						</div>
-					</div>
-				</div>
-			</footer>
+			<Footer />
 
 			<PopUp open={open} setOpen={setOpen}>
 				<header className="w-full flex justify-between items-center">

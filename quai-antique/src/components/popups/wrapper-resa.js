@@ -41,6 +41,7 @@ const Authentification = ({
 	setAuthentification,
 }) => {
 	const deviceType = useDeviceType();
+	const auth = useAuth();
 	const [mail, setMail] = useState("Yoann.huot2@outlook.fr");
 	const [password, setPassword] = useState("Yoshi90120!");
 

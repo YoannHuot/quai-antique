@@ -10,7 +10,14 @@ export const updateLogged = (logged) => {
 
 export const UPDATE_TOKEN = "UPDATE_TOKEN";
 
-export const updateToken = (logged, jwt, name, firstName, allergies) => {
+export const updateToken = (
+	logged,
+	jwt,
+	name,
+	firstName,
+	allergies,
+	isAdmin
+) => {
 	return {
 		type: UPDATE_TOKEN,
 		logged: logged,
@@ -18,6 +25,7 @@ export const updateToken = (logged, jwt, name, firstName, allergies) => {
 		name: name,
 		firstname: firstName,
 		allergies: allergies,
+		isAdmin: isAdmin,
 	};
 };
 

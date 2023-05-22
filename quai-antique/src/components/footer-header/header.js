@@ -16,6 +16,8 @@ const Header = ({
 	const [headerWidth, setHeaderWidth] = useState("100%");
 	const [isHeaderSticky, setIsHeaderSticky] = useState(false);
 	const [hasSignIn, setHasSignIn] = useState(false);
+	const [IsMounted, setIsMounted] = useState(false);
+
 	const headerRef = useRef(null);
 
 	const headerTexts = [
@@ -50,6 +52,10 @@ const Header = ({
 			setHasSignIn(false);
 		}
 	}, [auth.authStore]);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
 
 	/*
 	 *
@@ -127,16 +133,24 @@ const Header = ({
 						);
 					})}
 
-					<button
-						onClick={() => {
-							setOpen(true);
-						}}
-					>
-						<img
-							src="images/CTA.png"
-							className="xs:w-9 xs:h-9 lg:w-14 lg:h-14"
-						/>
-					</button>
+					{IsMounted && auth.authStore.isAdmin ? (
+						<Link href={"/administrateur"}>
+							<button className="font-Lustria text-gold font-bold pt-1 text-center uppercase xs:text-xs md:text-base relative overflow-hidden">
+								Page admin
+							</button>
+						</Link>
+					) : (
+						<button
+							onClick={() => {
+								setOpen(true);
+							}}
+						>
+							<img
+								src="images/CTA.png"
+								className="xs:w-9 xs:h-9 lg:w-14 lg:h-14"
+							/>
+						</button>
+					)}
 				</div>
 			</div>
 		</header>

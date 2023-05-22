@@ -49,19 +49,23 @@ try {
         prix DECIMAL(5,2)
     )");
 
-    $db->exec("
-        CREATE TABLE IF NOT EXISTS Menus (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            entree1 INT,
-            entree2 INT,
-            plat1 INT,
-            plat2 INT,
-            dessert1 INT,
-            dessert2 INT,
-            prix DECIMAL(5,2)
-        )");
-
     
+    $db->exec("
+    CREATE TABLE IF NOT EXISTS Menus (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        titre VARCHAR(50),
+        prix DECIMAL(5,2)
+    )");
+    
+    $db->exec("
+    CREATE TABLE IF NOT EXISTS Menu_Products (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        menu_id INT,
+        product_id INT,
+        type ENUM('plat', 'entree', 'dessert'),
+        FOREIGN KEY (menu_id) REFERENCES Menus(id),
+        FOREIGN KEY (product_id) REFERENCES Products(id)
+    )");
    
     $db->exec("
         CREATE TABLE IF NOT EXISTS ProductsPhare (
@@ -92,13 +96,12 @@ try {
         id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         userID INT UNSIGNED,
         dateTime DATETIME NOT NULL,
-        reg_date TIMESTAMP,
+        guests INT,
         FOREIGN KEY (userID) REFERENCES User(id)
     )");
     
 
 
-    // On est maintenant connecté
 } catch (PDOException $e) {
     echo "An error occurred while creating the tables";
     die($e->getMessage());

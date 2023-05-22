@@ -17,7 +17,7 @@ const SelectedHours = ({ selectedDate, setSelectedHours, selectedHours }) => {
 			"Vendredi",
 			"Samedi",
 		];
-		const dayOfWeek = daysOfWeek[selectedDate.getDay()];
+		const dayOfWeek = daysOfWeek[selectedDate && selectedDate.getDay()];
 		const openHours = weekSchedule[dayOfWeek];
 		const today = new Date();
 		const options = [];

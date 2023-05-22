@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import useAuth from "@/store/auth/hooks";
 
 const MenuHeader = ({ setOpen }) => {
+	const auth = useAuth();
+	const [IsMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
+
 	return (
 		<div
 			className={`menu px-2 h-14 w-full flex justify-between items-center bg-primary fixed bottom-0 z-40 
@@ -14,16 +22,18 @@ const MenuHeader = ({ setOpen }) => {
 					<span>Acceuil</span>
 				</div>
 			</Link>
-			<button
-				onClick={() => {
-					setOpen(true);
-				}}
-			>
-				<img
-					src="images/CTA.png"
-					className="xs:w-12 xs:h-12 lg:w-14 lg:h-14"
-				/>
-			</button>
+			{IsMounted && !auth.authStore.isAdmin && (
+				<button
+					onClick={() => {
+						setOpen(true);
+					}}
+				>
+					<img
+						src="images/CTA.png"
+						className="xs:w-12 xs:h-12 lg:w-14 lg:h-14"
+					/>
+				</button>
+			)}
 		</div>
 	);
 };

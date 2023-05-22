@@ -34,11 +34,9 @@ const useAuth = () => {
 	};
 
 	const login = async (data) => {
-		console.log("login se déclenche");
 		await axios
 			.get("http://localhost:8000/users/login.php", { params: data })
 			.then((response) => {
-				console.log(response.data);
 				if (response.data.jwt) {
 					let jwtObject = JSON.parse(response.data.jwt);
 					if (jwtObject.jwt && jwtObject.jwt.length > 25) {
@@ -48,7 +46,8 @@ const useAuth = () => {
 								jwtObject.jwt,
 								response.data.name,
 								response.data.firstname,
-								response.data.allergies
+								response.data.allergies,
+								response.data.admin && response.data.admin
 							)
 						);
 						Cookies.set("jwt", jwtObject.jwt, { expires: 7 });

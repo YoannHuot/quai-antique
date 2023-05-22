@@ -61,6 +61,7 @@ export default function Home() {
 			setSignIn(true);
 		}
 	}, [auth.authStore.logged]);
+
 	/*
 	 *
 	 * Menu animation

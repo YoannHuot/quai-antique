@@ -42,8 +42,6 @@ function checkUserLogin($db, $email, $password)
 }
 
 
-
-
 /*
 * Vérification de la validité de l'email envoyé
 */
@@ -54,22 +52,6 @@ function checkValidEmail($db, $mail) {
     $result = $stmt->fetch();
 
     if($result['count'] > 0) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-
-
-/*
-* Vérification des contournement emails "admin" pour les autres rôles
-*/
-function checkSpy($email)
-{
-
-    if (strpos($email, 'admin-quai-antique') !== false) {
-        echo  "Adresse mail interdite, veuillez nous contacter";
         return false;
     } else {
         return true;
@@ -129,11 +111,12 @@ function getJwtToken($payload, $secret)
 function decodeJwt($jwt, $secret)
 {
 
-    $parts = explode('.', $jwt);
-    if (count($parts) != 3) {
-        throw new Exception('Invalid JWT format');
+    if($jwt) { 
+        $parts = explode('.', $jwt);
+        if (count($parts) != 3) {
+            throw new Exception('Invalid JWT format');
+        }
     }
-
     list($header, $payload, $signatureProvided) = $parts;
 
     $secret = base64_encode($secret);

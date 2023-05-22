@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 
 import _ from "underscore";
 import useDeviceType from "@/hooks/device-type";
@@ -7,17 +7,10 @@ import PopUp from "@/components/popups/popup";
 import PopUpContentResa from "../components/popups/wrapper-resa";
 import CardMenu from "@/components/cards/card-menu";
 import Footer from "@/components/footer-header/footer";
-import axios from "axios";
 
-const Menu = () => {
+const Administrateur = () => {
 	const [open, setOpen] = useState(false);
 	const [auth, setAuth] = useState(false);
-
-	const [products, setProducts] = useState();
-	const [menu, setMenu] = useState();
-	const [menuProducts, setMenuProducts] = useState();
-
-	const [showMenu, setShowMenu] = useState();
 
 	const deviceType = useDeviceType();
 
@@ -136,6 +129,11 @@ const Menu = () => {
 							description:
 								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
 						},
+						{
+							title: "Salade de lentilles aux lardons",
+							description:
+								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
+						},
 					],
 				},
 				plats: {
@@ -146,6 +144,11 @@ const Menu = () => {
 							description:
 								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
 						},
+						{
+							title: "Salade de lentilles aux lardons",
+							description:
+								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
+						},
 					],
 				},
 				desserts: {
@@ -155,6 +158,11 @@ const Menu = () => {
 							title: "Quiche aux poireaux et fromage de chèvre",
 							description:
 								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
+						},
+						{
+							title: "Salade de lentilles aux lardons",
+							description:
+								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
 						},
 					],
 				},
@@ -264,83 +272,6 @@ const Menu = () => {
 		},
 	];
 
-	useEffect(() => {
-		if (menu && menuProducts) {
-			let result = menu.map((menu) => {
-				let menuProductsForThisMenu = menuProducts.filter(
-					(menuProduct) => menuProduct.menu_id === menu.id
-				);
-
-				let entrees = menuProductsForThisMenu
-					.filter((menuProduct) => menuProduct.type === "entree")
-					.map((menuProduct) =>
-						products.find(
-							(product) => product.id === menuProduct.product_id
-						)
-					);
-
-				let plats = menuProductsForThisMenu
-					.filter((menuProduct) => menuProduct.type === "plat")
-					.map((menuProduct) =>
-						products.find(
-							(product) => product.id === menuProduct.product_id
-						)
-					);
-
-				let desserts = menuProductsForThisMenu
-					.filter((menuProduct) => menuProduct.type === "dessert")
-					.map((menuProduct) =>
-						products.find(
-							(product) => product.id === menuProduct.product_id
-						)
-					);
-
-				return {
-					id: menu.id,
-					titre: menu.titre,
-					prix: menu.prix,
-					menu: {
-						entrees: {
-							title: "entrées",
-							products: entrees,
-						},
-						plats: {
-							title: "plats",
-							products: plats,
-						},
-						desserts: {
-							title: "desserts",
-							products: desserts,
-						},
-					},
-				};
-			});
-			setShowMenu(result);
-		}
-	}, [products, menu, menuProducts]);
-
-	useEffect(() => {
-		const fetchProducts = async () => {
-			try {
-				const response = await axios.get(
-					"http://localhost:8000/administrator/index.php"
-				);
-				if (response.status === 200) {
-					setProducts(response.data.products);
-					setMenu(response.data.menus);
-					setMenuProducts(response.data.menu_products);
-				}
-			} catch (error) {
-				console.error(
-					"Erreur lors de la récupération des produits : ",
-					error
-				);
-			}
-		};
-
-		fetchProducts();
-	}, []);
-
 	return (
 		<div>
 			<div className="flex min-h-screen flex-col xs:p-2 sm:p-4 lg:p-8">
@@ -365,33 +296,6 @@ const Menu = () => {
 							<div className="h-2 w-2 bg-gold rounded-full" />
 						</div>
 					</div>
-					<div className="lg:flex lg:flex-row">
-						{_.map(carteContents, (contents, index) => {
-							let lastColum = index + 1 === carteContents.length;
-							return (
-								<div
-									className={`pb-6 lg:${
-										lastColum ? "mr-0" : "mr-8"
-									} lg:w-1/3`}
-									key={index}
-								>
-									<h3 className="capitalize  text-xl font-Laila font-medium text-primary">
-										{contents.title}
-									</h3>
-									<div className="w-16 bg-gold h-0.5 mb-4" />
-									{_.map(contents.products, (content, index) => {
-										return (
-											<CardMenu
-												title={content.title}
-												description={content.description}
-												price={content.price}
-											/>
-										);
-									})}
-								</div>
-							);
-						})}
-					</div>
 				</section>
 
 				<section className="w-full pt-4 px-4">
@@ -404,126 +308,13 @@ const Menu = () => {
 							<div className="h-2 w-2 bg-gold rounded-full" />
 						</div>
 					</div>
-
-					<div className="lg:flex lg:flew-row lg:text-center">
-						{_.map(showMenu, (contents, index) => {
-							let sectionEnd = index + 1 === menuContents.length;
-							return (
-								<div
-									className={`${!sectionEnd && "pb-8"} lg:w-1/3 lg:${
-										sectionEnd ? "mr-0" : "mr-4"
-									}`}
-								>
-									<div className="lg:flex lg:flex-col lg:justify-center lg:items-center relative lg:mb-4">
-										<div>
-											<h3 className="capitalize  text-2xl font-Laila font-medium text-primary">
-												{contents.titre}
-											</h3>
-											<div className="absolute -top-2 right-0 flex">
-												<div className="relative">
-													<img
-														src="/images/price.svg"
-														className="w-8 h-8 md:w-10 md:h-10 "
-													/>
-													<span className="absolute font-light top-4 left-1">
-														{contents.prix}.
-													</span>
-												</div>
-											</div>
-										</div>
-										<div
-											className="w-24 bg-gold  mb-4 flex flex-col  "
-											style={
-												deviceType !== "desktop"
-													? { height: "3px" }
-													: { height: "2px" }
-											}
-										/>
-									</div>
-
-									{_.map(contents.menu, (content, key) => {
-										return (
-											<div className="mb-12" key={key}>
-												<div className="lg:flex  lg:flex-col lg:items-center">
-													<h3 className=" capitalize text-lg">
-														{content.title}
-													</h3>
-													<div className="w-8 bg-gold h-0.5  flex flex-col mb-4" />
-												</div>
-
-												<div className="flex flex-col">
-													{_.map(
-														content.products,
-														(product, i) => {
-															let isEnd =
-																i + 1 ===
-																content.products.length;
-															return (
-																<div className="flex flex-col ">
-																	<CardMenu
-																		menu
-																		title={product.title}
-																		description={
-																			product.description
-																		}
-																	/>
-																	{!isEnd && (
-																		<span className="pb-4 pt-3 h-12 text-center">
-																			OU
-																		</span>
-																	)}
-																</div>
-															);
-														}
-													)}
-												</div>
-											</div>
-										);
-									})}
-								</div>
-							);
-						})}
-					</div>
 				</section>
 				<div className="mb-16 text-center">
 					<Footer menu />
 				</div>
 			</div>
 			<MenuHeader className="pb-10" setOpen={setOpen} />
-
-			<PopUp open={open} setOpen={setOpen}>
-				<header className="w-full flex justify-between items-center">
-					<h2 className="font-Libre text-2xl font-bold w-1/2">
-						Réservation
-					</h2>
-					<button
-						className="cursor pointer"
-						onClick={() => {
-							setOpen(false);
-						}}
-					>
-						<img src="/images/back-button.png" className="w-6 h-6" />
-					</button>
-				</header>
-				<PopUpContentResa />
-			</PopUp>
-
-			<PopUp open={auth} setOpen={setAuth}>
-				<header className="w-full flex justify-between items-center">
-					<h2 className="font-Libre text-2xl font-bold w-2/3">
-						Création de compte
-					</h2>
-					<button
-						className="cursor pointer"
-						onClick={() => {
-							setAuth(false);
-						}}
-					>
-						<img src="/images/back-button.png" className="w-6 h-6" />
-					</button>
-				</header>
-			</PopUp>
 		</div>
 	);
 };
-export default Menu;
+export default Administrateur;

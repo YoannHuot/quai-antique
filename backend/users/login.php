@@ -20,23 +20,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $user_password = $current_user["mdp"];
     $user_firstname = $current_user["prenom"];
     $user_allergies = $current_user["allergies"];
+    $user_profil = $current_user['profil'];
 
     $payload = [
         'id' => $user_id,
         'mail' => $user_mail,
         'name' => $user_name,
         'firstname' => $user_firstname,
-        'allergies' => $user_allergies
+        'allergies' => $user_allergies,
     ];
 
     if ($user_id) {
-        $jwt = getJwtToken($payload, SECRET);
-        $response = [
-            'jwt' => $jwt,
-            'name' => $user_name,
-            'firstname' => $user_firstname,
-            'allergies' => $user_allergies
-        ];
-        echo json_encode($response);
+        if($user_profil === 'administrateur') { 
+            $jwt = getJwtToken($payload, SECRET);
+            $response = [
+                'jwt' => $jwt,
+                'name' => $user_name,
+                'firstname' => $user_firstname,
+                'allergies' => $user_allergies,
+                'admin' => true
+            ];
+            echo json_encode($response);
+        } else { 
+            $jwt = getJwtToken($payload, SECRET);
+            $response = [
+                'jwt' => $jwt,
+                'name' => $user_name,
+                'firstname' => $user_firstname,
+                'allergies' => $user_allergies
+            ];
+            echo json_encode($response);
+        }
     }
+    
 };

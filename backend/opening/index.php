@@ -7,8 +7,10 @@ require_once '../functions-opening.php';
 
 
 $openingHours = [
-    ['dayOfWeek' => 1, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
-    ['dayOfWeek' => 1, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],  
+    // ['dayOfWeek' => 1, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
+    // ['dayOfWeek' => 1, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],  
+
+    ['dayOfWeek' => 1, 'shift' => 'CLOSED', 'openingTime' => NULL, 'closingTime' => NULL], 
 
     ['dayOfWeek' => 2, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
     ['dayOfWeek' => 2, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'], 
@@ -38,8 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
-    // $openingHours = getOpeningHours($db);
-    // echo($openingHours);
+
     echo json_encode($openingHours);
 
 };

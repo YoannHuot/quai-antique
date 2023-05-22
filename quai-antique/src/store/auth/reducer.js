@@ -21,6 +21,7 @@ export default function authReducer(state = initialState, action) {
 				name: action.name,
 				firstname: action.firstname,
 				allergies: action.allergies,
+				isAdmin: action.isAdmin,
 			};
 
 		case RESET_STORE:

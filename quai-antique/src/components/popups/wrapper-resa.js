@@ -100,7 +100,7 @@ const Authentification = ({
 const Reservation = ({ setIndex }) => {
 	const deviceType = useDeviceType();
 
-	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [selectedDate, setSelectedDate] = useState(null);
 
 	const [formattedDate, setFormattedDate] = useState("");
 	const [selectedHours, setSelectedHours] = useState("12:00");
@@ -110,9 +110,12 @@ const Reservation = ({ setIndex }) => {
 	const [message, setMessage] = useState("");
 
 	useEffect(() => {
-		const year = selectedDate.getFullYear();
-		const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
-		const day = selectedDate.getDate().toString().padStart(2, "0");
+		const year = selectedDate && selectedDate.getFullYear();
+		const month =
+			selectedDate &&
+			(selectedDate.getMonth() + 1).toString().padStart(2, "0");
+		const day =
+			selectedDate && selectedDate.getDate().toString().padStart(2, "0");
 
 		setFormattedDate(`${year}-${month}-${day}`);
 	}, [selectedDate]);

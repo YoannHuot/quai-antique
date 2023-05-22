@@ -294,8 +294,10 @@ const Authentification = ({ signIn, setAuthentification }) => {
 					},
 				})
 				.then((response) => {
-					console.log(response);
-					setResa(response.data);
+					if (response.data) {
+						console.log(response);
+						setResa(response.data);
+					}
 				})
 				.catch((error) => {
 					console.log(error);

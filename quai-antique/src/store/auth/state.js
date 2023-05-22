@@ -4,4 +4,5 @@ export const initialState = {
 	name: "",
 	firstname: "",
 	allergies: "",
+	isAdmin: "",
 };

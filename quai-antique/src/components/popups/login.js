@@ -5,7 +5,7 @@ import useAuth from "@/store/auth/hooks";
 const Login = ({ setSignIn }) => {
 	const deviceType = useDeviceType();
 	const auth = useAuth();
-	const [mail, setMail] = useState("Yoann.huot2@outlook.fr");
+	const [mail, setMail] = useState("admin-quai-antique@gmail.com");
 	const [password, setPassword] = useState("Yoshi90120!");
 
 	const handleSubmit = (e) => {

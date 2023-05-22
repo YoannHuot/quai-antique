@@ -20,35 +20,36 @@ function fetchEmails($fetchBdd, $db)
 /*
 * Fetch current user
 */
-function FetchCurrentUser($db, $fetchBdd, $role, $mail)
+function CurrentUserIsAdmin($db, $id, $mail)
 {
-    $request = $db->prepare($fetchBdd[$role]);
-    $request->execute();
+    $sql = 'SELECT * FROM User WHERE id = :id AND email = :email';
+    
+    try {
+        $request = $db->prepare($sql);
+        $request->bindParam(':id', $id);
+        $request->bindParam(':email', $mail);
+        $request->execute();
+    } catch (PDOException $e) {
+        die('Erreur : ' . $e->getMessage());
+    }
+    
     $users = $request->fetchAll();
+
+    if (!$users || count($users) == 0) {
+        return "No user found";
+    }
 
     foreach ($users as $index => $user) {
-        var_dump($user);
-    }
-}
-
-/*
-* Récupération des consultants non validés par les adminsitrateurs
-*/
-function fetchUserUnValidate($db, $fetchBdd, $role)
-{
-    $usersUnvalidate = array();
-
-    $request = $db->prepare($fetchBdd[$role]);
-    $request->execute();
-    $users = $request->fetchAll();
-
-    foreach ($users as $index => $users) {
-        if ($users["created_by"] === NULL) {
-            array_push($usersUnvalidate, $users);
+        if($user["email"] !== "admin-quai-antique@gmail.com") {
+            return "User is not an admin";
+        } else {
+            return true;
         }
     }
-    return $usersUnvalidate;
 }
+
+
+
 
 /*
 * Requête d'insertion dans la base de données selon le rôle

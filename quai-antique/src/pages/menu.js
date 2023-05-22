@@ -14,310 +14,47 @@ const Menu = () => {
 	const [auth, setAuth] = useState(false);
 
 	const [products, setProducts] = useState();
+	const [showProducts, setShowProducts] = useState();
 	const [menu, setMenu] = useState();
-	const [menuProducts, setMenuProducts] = useState();
-
 	const [showMenu, setShowMenu] = useState();
 
 	const deviceType = useDeviceType();
 
-	const carteContents = [
-		{
-			title: "entrée",
-			products: [
-				{
-					id: "1",
-					title: "Salade de Reblochon et noix",
-					description:
-						"Salade fraîche avec des morceaux de fromage Reblochon, des noix croquantes et une vinaigrette aux herbes",
-					price: "12",
-				},
-				{
-					id: "2",
-					title: "Salade de Reblochon et noix",
-					description:
-						"Salade fraîche avec des morceaux de fromage Reblochon, des noix croquantes et une vinaigrette aux herbes",
-					price: "12",
-				},
-				{
-					id: "3",
-					title: "Salade de Reblochon et noix",
-					description:
-						"Salade fraîche avec des morceaux de fromage Reblochon, des noix croquantes et une vinaigrette aux herbes",
-					price: "12",
-				},
-				{
-					id: "4",
-					title: "Salade de Reblochon et noix",
-					description:
-						"Salade fraîche avec des morceaux de fromage Reblochon, des noix croquantes et une vinaigrette aux herbes",
-					price: "12",
-				},
-			],
-		},
-
-		{
-			title: "plats",
-			products: [
-				{
-					id: "1",
-					title: "Fondue Savoyarde",
-					description:
-						"Mélange de fromage fondu dans du vin blanc avec des morceaux de pain frais, servi avec des pommes de terre et des légumes frais de saison",
-					price: "26",
-				},
-				{
-					id: "2",
-					title: "Fondue Savoyarde",
-					description:
-						"Mélange de fromage fondu dans du vin blanc avec des morceaux de pain frais, servi avec des pommes de terre et des légumes frais de saison",
-					price: "26",
-				},
-				{
-					id: "3",
-					title: "Fondue Savoyarde",
-					description:
-						"Mélange de fromage fondu dans du vin blanc avec des morceaux de pain frais, servi avec des pommes de terre et des légumes frais de saison",
-					price: "26",
-				},
-				{
-					id: "4",
-					title: "Fondue Savoyarde",
-					description:
-						"Mélange de fromage fondu dans du vin blanc avec des morceaux de pain frais, servi avec des pommes de terre et des légumes frais de saison",
-					price: "26",
-				},
-			],
-		},
-		{
-			title: "desserts",
-			products: [
-				{
-					id: "1",
-					title: "Tarte aux myrtilles",
-					description:
-						"Ragoût de cerf mijoté avec des champignons sauvages frais et des légumes de saison, servi avec de la polenta crémeuse.",
-					price: "9",
-				},
-				{
-					id: "2",
-					title: "Tarte aux myrtilles",
-					description:
-						"Ragoût de cerf mijoté avec des champignons sauvages frais et des légumes de saison, servi avec de la polenta crémeuse.",
-					price: "9",
-				},
-				{
-					id: "3",
-					title: "Tarte aux myrtilles",
-					description:
-						"Ragoût de cerf mijoté avec des champignons sauvages frais et des légumes de saison, servi avec de la polenta crémeuse.",
-					price: "9",
-				},
-				{
-					id: "4",
-					title: "Tarte aux myrtilles",
-					description:
-						"Ragoût de cerf mijoté avec des champignons sauvages frais et des légumes de saison, servi avec de la polenta crémeuse.",
-					price: "9",
-				},
-			],
-		},
-	];
-	const menuContents = [
-		{
-			title: "Savoy'art",
-			price: "51",
-			menu: {
-				entrées: {
-					title: "entrées",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-					],
-				},
-				plats: {
-					title: "plats",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-					],
-				},
-				desserts: {
-					title: "desserts",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-					],
-				},
-			},
-		},
-		{
-			title: "Grand-Maman",
-			price: "42",
-			menu: {
-				entrées: {
-					title: "entrées",
-					products: [
-						{
-							title: "Velouté de potiron et diots de Savoie",
-							description:
-								"une soupe onctueuse à base de potiron frais et de saucisses diots de Savoie fumées, servie avec des croûtons dorés",
-						},
-						{
-							title: "Tartare de truite de montagne",
-							description:
-								"une soupe onctueuse à base de potiron frais et de saucisses diots de Savoie fumées, servie avec des croûtons dorés.",
-						},
-					],
-				},
-				plats: {
-					title: "plats",
-					products: [
-						{
-							title: "Filet de truite du Lac Léman, sauce aux écrevisses",
-							description:
-								"Filet de truite fraîche du lac Léman cuit à la perfection, servi avec une sauce crémeuse aux écrevisses et accompagné de légumes de saison",
-						},
-						{
-							title: "Poularde de Bresse farcie aux cèpes, croûte de sel et d'herbes",
-							description:
-								"une soupe onctueuse à base de potiron frais et de saucisses diots de Savoie fumées, servie avec des croûtons dorés",
-						},
-					],
-				},
-				desserts: {
-					title: "desserts",
-					products: [
-						{
-							title: "Beignets aux pommes",
-							description:
-								"une soupe onctueuse à base de potiron frais et de saucisses diots de Savoie fumées, servie avec des croûtons dorés",
-						},
-						{
-							title: "Crème brûlée à la Chartreuse",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-			},
-		},
-		{
-			title: "Bon & bon",
-			price: "64",
-			menu: {
-				entrées: {
-					title: "entrées",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-				plats: {
-					title: "plats",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-				desserts: {
-					title: "desserts",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-			},
-		},
-	];
-
 	useEffect(() => {
-		if (menu && menuProducts) {
-			let result = menu.map((menu) => {
-				let menuProductsForThisMenu = menuProducts.filter(
-					(menuProduct) => menuProduct.menu_id === menu.id
-				);
+		if (products) {
+			const typeMapping = {
+				entree: "entrée",
+				plat: "plats",
+				dessert: "desserts",
+			};
 
-				let entrees = menuProductsForThisMenu
-					.filter((menuProduct) => menuProduct.type === "entree")
-					.map((menuProduct) =>
-						products.find(
-							(product) => product.id === menuProduct.product_id
-						)
-					);
+			const productsSorting = Object.values(
+				products.reduce((acc, product) => {
+					// Convertir le type du produit à son équivalent en anglais
+					const title = typeMapping[product.type];
 
-				let plats = menuProductsForThisMenu
-					.filter((menuProduct) => menuProduct.type === "plat")
-					.map((menuProduct) =>
-						products.find(
-							(product) => product.id === menuProduct.product_id
-						)
-					);
+					if (!acc[title]) {
+						// Si ce groupe n'existe pas encore, le créer
+						acc[title] = {
+							title: title,
+							products: [],
+						};
+					}
 
-				let desserts = menuProductsForThisMenu
-					.filter((menuProduct) => menuProduct.type === "dessert")
-					.map((menuProduct) =>
-						products.find(
-							(product) => product.id === menuProduct.product_id
-						)
-					);
+					// Ajouter le produit au groupe approprié
+					acc[title].products.push({
+						id: product.id.toString(),
+						title: product.titre,
+						description: product.description,
+						price: product.prix,
+					});
 
-				return {
-					id: menu.id,
-					titre: menu.titre,
-					prix: menu.prix,
-					menu: {
-						entrees: {
-							title: "entrées",
-							products: entrees,
-						},
-						plats: {
-							title: "plats",
-							products: plats,
-						},
-						desserts: {
-							title: "desserts",
-							products: desserts,
-						},
-					},
-				};
-			});
-			setShowMenu(result);
+					return acc;
+				}, {})
+			);
+			setShowProducts(productsSorting);
 		}
-	}, [products, menu, menuProducts]);
+	}, [products]);
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -328,7 +65,6 @@ const Menu = () => {
 				if (response.status === 200) {
 					setProducts(response.data.products);
 					setMenu(response.data.menus);
-					setMenuProducts(response.data.menu_products);
 				}
 			} catch (error) {
 				console.error(
@@ -366,13 +102,13 @@ const Menu = () => {
 						</div>
 					</div>
 					<div className="lg:flex lg:flex-row">
-						{_.map(carteContents, (contents, index) => {
-							let lastColum = index + 1 === carteContents.length;
+						{_.map(showProducts, (contents, index) => {
+							let lastColum = index + 1 === products.length;
 							return (
 								<div
 									className={`pb-6 lg:${
 										lastColum ? "mr-0" : "mr-8"
-									} lg:w-1/3`}
+									} lg:w-1/3 lg:px-2`}
 									key={index}
 								>
 									<h3 className="capitalize  text-xl font-Laila font-medium text-primary">
@@ -384,7 +120,7 @@ const Menu = () => {
 											<CardMenu
 												title={content.title}
 												description={content.description}
-												price={content.price}
+												price={Math.ceil(content.price)}
 											/>
 										);
 									})}
@@ -406,8 +142,8 @@ const Menu = () => {
 					</div>
 
 					<div className="lg:flex lg:flew-row lg:text-center">
-						{_.map(showMenu, (contents, index) => {
-							let sectionEnd = index + 1 === menuContents.length;
+						{_.map(menu, (contents, index) => {
+							let sectionEnd = index + 1 === menu.length;
 							return (
 								<div
 									className={`${!sectionEnd && "pb-8"} lg:w-1/3 lg:${
@@ -416,20 +152,9 @@ const Menu = () => {
 								>
 									<div className="lg:flex lg:flex-col lg:justify-center lg:items-center relative lg:mb-4">
 										<div>
-											<h3 className="capitalize  text-2xl font-Laila font-medium text-primary">
+											<h3 className="capitalize  text-xl font-Laila font-medium text-primary">
 												{contents.titre}
 											</h3>
-											<div className="absolute -top-2 right-0 flex">
-												<div className="relative">
-													<img
-														src="/images/price.svg"
-														className="w-8 h-8 md:w-10 md:h-10 "
-													/>
-													<span className="absolute font-light top-4 left-1">
-														{contents.prix}.
-													</span>
-												</div>
-											</div>
 										</div>
 										<div
 											className="w-24 bg-gold  mb-4 flex flex-col  "
@@ -441,41 +166,28 @@ const Menu = () => {
 										/>
 									</div>
 
-									{_.map(contents.menu, (content, key) => {
+									{_.map(contents.formules, (content, key) => {
 										return (
-											<div className="mb-12" key={key}>
-												<div className="lg:flex  lg:flex-col lg:items-center">
-													<h3 className=" capitalize text-lg">
-														{content.title}
+											<div className="mb-4 relative" key={key}>
+												<div className="lg:flex lg:flex-col lg:items-center">
+													<h3 className=" capitalize text-base font-Laila lg:font-medium">
+														{content.titre}
 													</h3>
-													<div className="w-8 bg-gold h-0.5  flex flex-col mb-4" />
+													<div className="absolute -top-2 right-0 flex">
+														<div className="relative">
+															<img
+																src="/images/price.svg"
+																className="w-8 h-8 md:w-10 md:h-10 "
+															/>
+															<span className="absolute text-xs font-light top-4 left-1">
+																{Math.ceil(content.prix)}.
+															</span>
+														</div>
+													</div>
 												</div>
 
-												<div className="flex flex-col">
-													{_.map(
-														content.products,
-														(product, i) => {
-															let isEnd =
-																i + 1 ===
-																content.products.length;
-															return (
-																<div className="flex flex-col ">
-																	<CardMenu
-																		menu
-																		title={product.title}
-																		description={
-																			product.description
-																		}
-																	/>
-																	{!isEnd && (
-																		<span className="pb-4 pt-3 h-12 text-center">
-																			OU
-																		</span>
-																	)}
-																</div>
-															);
-														}
-													)}
+												<div className="flex flex-col italic text-xs lg:text-base font-Laila">
+													{content.description}
 												</div>
 											</div>
 										);

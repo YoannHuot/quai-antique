@@ -1,276 +1,94 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import _ from "underscore";
 import useDeviceType from "@/hooks/device-type";
 import MenuHeader from "@/components/footer-header/menu-header";
+import AdminHandleCarte from "@/components/forms/admin-handle-carte";
 import PopUp from "@/components/popups/popup";
 import PopUpContentResa from "../components/popups/wrapper-resa";
-import CardMenu from "@/components/cards/card-menu";
+import CardAdmin from "@/components/cards/card-admin";
 import Footer from "@/components/footer-header/footer";
+import axios from "axios";
 
-const Administrateur = () => {
+const Menu = () => {
 	const [open, setOpen] = useState(false);
 	const [auth, setAuth] = useState(false);
 
+	const [products, setProducts] = useState();
+	const [showProducts, setShowProducts] = useState();
+	const [menuProducts, setMenuProducts] = useState();
+	const [menu, setMenu] = useState();
+	const [showMenu, setShowMenu] = useState();
+
+	const [handleCarte, setHandleCarte] = useState(false);
+	const [handleMenu, setHandleMenu] = useState(false);
+	const [handleTime, setHandleTime] = useState(false);
+	const [handleStars, setHandleStars] = useState(false);
+
 	const deviceType = useDeviceType();
 
-	const carteContents = [
-		{
-			title: "entrée",
-			products: [
-				{
-					id: "1",
-					title: "Salade de Reblochon et noix",
-					description:
-						"Salade fraîche avec des morceaux de fromage Reblochon, des noix croquantes et une vinaigrette aux herbes",
-					price: "12",
-				},
-				{
-					id: "2",
-					title: "Salade de Reblochon et noix",
-					description:
-						"Salade fraîche avec des morceaux de fromage Reblochon, des noix croquantes et une vinaigrette aux herbes",
-					price: "12",
-				},
-				{
-					id: "3",
-					title: "Salade de Reblochon et noix",
-					description:
-						"Salade fraîche avec des morceaux de fromage Reblochon, des noix croquantes et une vinaigrette aux herbes",
-					price: "12",
-				},
-				{
-					id: "4",
-					title: "Salade de Reblochon et noix",
-					description:
-						"Salade fraîche avec des morceaux de fromage Reblochon, des noix croquantes et une vinaigrette aux herbes",
-					price: "12",
-				},
-			],
-		},
+	useEffect(() => {
+		if (menu) {
+			console.log(menu);
 
-		{
-			title: "plats",
-			products: [
-				{
-					id: "1",
-					title: "Fondue Savoyarde",
-					description:
-						"Mélange de fromage fondu dans du vin blanc avec des morceaux de pain frais, servi avec des pommes de terre et des légumes frais de saison",
-					price: "26",
-				},
-				{
-					id: "2",
-					title: "Fondue Savoyarde",
-					description:
-						"Mélange de fromage fondu dans du vin blanc avec des morceaux de pain frais, servi avec des pommes de terre et des légumes frais de saison",
-					price: "26",
-				},
-				{
-					id: "3",
-					title: "Fondue Savoyarde",
-					description:
-						"Mélange de fromage fondu dans du vin blanc avec des morceaux de pain frais, servi avec des pommes de terre et des légumes frais de saison",
-					price: "26",
-				},
-				{
-					id: "4",
-					title: "Fondue Savoyarde",
-					description:
-						"Mélange de fromage fondu dans du vin blanc avec des morceaux de pain frais, servi avec des pommes de terre et des légumes frais de saison",
-					price: "26",
-				},
-			],
-		},
-		{
-			title: "desserts",
-			products: [
-				{
-					id: "1",
-					title: "Tarte aux myrtilles",
-					description:
-						"Ragoût de cerf mijoté avec des champignons sauvages frais et des légumes de saison, servi avec de la polenta crémeuse.",
-					price: "9",
-				},
-				{
-					id: "2",
-					title: "Tarte aux myrtilles",
-					description:
-						"Ragoût de cerf mijoté avec des champignons sauvages frais et des légumes de saison, servi avec de la polenta crémeuse.",
-					price: "9",
-				},
-				{
-					id: "3",
-					title: "Tarte aux myrtilles",
-					description:
-						"Ragoût de cerf mijoté avec des champignons sauvages frais et des légumes de saison, servi avec de la polenta crémeuse.",
-					price: "9",
-				},
-				{
-					id: "4",
-					title: "Tarte aux myrtilles",
-					description:
-						"Ragoût de cerf mijoté avec des champignons sauvages frais et des légumes de saison, servi avec de la polenta crémeuse.",
-					price: "9",
-				},
-			],
-		},
-	];
-	const menuContents = [
-		{
-			title: "Savoy'art",
-			price: "51",
-			menu: {
-				entrées: {
-					title: "entrées",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-				plats: {
-					title: "plats",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-				desserts: {
-					title: "desserts",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-			},
-		},
-		{
-			title: "Grand-Maman",
-			price: "42",
-			menu: {
-				entrées: {
-					title: "entrées",
-					products: [
-						{
-							title: "Velouté de potiron et diots de Savoie",
-							description:
-								"une soupe onctueuse à base de potiron frais et de saucisses diots de Savoie fumées, servie avec des croûtons dorés",
-						},
-						{
-							title: "Tartare de truite de montagne",
-							description:
-								"une soupe onctueuse à base de potiron frais et de saucisses diots de Savoie fumées, servie avec des croûtons dorés.",
-						},
-					],
-				},
-				plats: {
-					title: "plats",
-					products: [
-						{
-							title: "Filet de truite du Lac Léman, sauce aux écrevisses",
-							description:
-								"Filet de truite fraîche du lac Léman cuit à la perfection, servi avec une sauce crémeuse aux écrevisses et accompagné de légumes de saison",
-						},
-						{
-							title: "Poularde de Bresse farcie aux cèpes, croûte de sel et d'herbes",
-							description:
-								"une soupe onctueuse à base de potiron frais et de saucisses diots de Savoie fumées, servie avec des croûtons dorés",
-						},
-					],
-				},
-				desserts: {
-					title: "desserts",
-					products: [
-						{
-							title: "Beignets aux pommes",
-							description:
-								"une soupe onctueuse à base de potiron frais et de saucisses diots de Savoie fumées, servie avec des croûtons dorés",
-						},
-						{
-							title: "Crème brûlée à la Chartreuse",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-			},
-		},
-		{
-			title: "Bon & bon",
-			price: "64",
-			menu: {
-				entrées: {
-					title: "entrées",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-				plats: {
-					title: "plats",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-				desserts: {
-					title: "desserts",
-					products: [
-						{
-							title: "Quiche aux poireaux et fromage de chèvre",
-							description:
-								"Quiche légère et savoureuse, garnie de poireaux frais et de fromage de chèvre fondant.",
-						},
-						{
-							title: "Salade de lentilles aux lardons",
-							description:
-								"Salade fraîche et saine de lentilles, de lardons fumés et de légumes verts.",
-						},
-					],
-				},
-			},
-		},
-	];
+			setShowMenu(result);
+		}
+
+		if (products) {
+			const typeMapping = {
+				entree: "entrée",
+				plat: "plats",
+				dessert: "desserts",
+			};
+
+			const productsSorting = Object.values(
+				products.reduce((acc, product) => {
+					// Convertir le type du produit à son équivalent en anglais
+					const title = typeMapping[product.type];
+
+					if (!acc[title]) {
+						// Si ce groupe n'existe pas encore, le créer
+						acc[title] = {
+							title: title,
+							products: [],
+						};
+					}
+
+					// Ajouter le produit au groupe approprié
+					acc[title].products.push({
+						id: product.id.toString(),
+						title: product.titre,
+						description: product.description,
+						price: product.prix,
+					});
+
+					return acc;
+				}, {})
+			);
+			setShowProducts(productsSorting);
+		}
+	}, [products, menu]);
+
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				const response = await axios.get(
+					"http://localhost:8000/administrator/index.php"
+				);
+				if (response.status === 200) {
+					setProducts(response.data.products);
+					setMenu(response.data.menus);
+				}
+			} catch (error) {
+				console.error(
+					"Erreur lors de la récupération des produits : ",
+					error
+				);
+			}
+		};
+
+		fetchProducts();
+	}, []);
 
 	return (
 		<div>
@@ -296,25 +114,52 @@ const Administrateur = () => {
 							<div className="h-2 w-2 bg-gold rounded-full" />
 						</div>
 					</div>
-				</section>
+					<div className="w-full flex-row flex justify-between">
+						<button
+							className="bg-primary p-2 text-white w-32 h-28"
+							onClick={() => setHandleCarte(!handleCarte)}
+						>
+							{handleCarte ? "Fermer" : "Modifier la carte"}
+						</button>
+						<button
+							className="bg-primary p-2 text-white w-32 h-28"
+							onClick={() => setHandleMenu(!handleMenu)}
+						>
+							{handleMenu ? "Fermer" : "Modifier les menus"}
+						</button>
+						<button
+							className="bg-primary p-2 text-white w-32 h-28"
+							onClick={() => setHandleTime(!handleTime)}
+						>
+							{handleTime ? "Fermer" : "Modifier les horaires"}
+						</button>
 
-				<section className="w-full pt-4 px-4">
-					<div className="w-full flex justify-center">
-						<div className="flex flex-row items items-center my-4 w-2/3 lg:mb-12">
-							<div className="h-2 w-2  bg-gold rounded-full" />
-							<h2 className="font-Libre text-2xl lg:text-3xl  text-center w-full">
-								Nos Menus
-							</h2>
-							<div className="h-2 w-2 bg-gold rounded-full" />
-						</div>
+						<button
+							className="bg-primary p-2 text-white w-32 h-28"
+							onClick={() => setHandleStars(!handleStars)}
+						>
+							{handleStars ? "Fermer" : "Modifier les produits phares"}
+						</button>
 					</div>
 				</section>
-				<div className="mb-16 text-center">
+				<section>
+					{handleCarte && (
+						<AdminHandleCarte
+							showProducts={showProducts}
+							products={products}
+						/>
+					)}
+					{handleStars && <div>WORK IN PROGRESS</div>}
+					{handleTime && <div>WORK IN PROGRESS</div>}
+					{handleMenu && <div>Work in pro</div>}
+				</section>
+
+				{/* <div className="mb-16 text-center">
 					<Footer menu />
-				</div>
+				</div> */}
 			</div>
 			<MenuHeader className="pb-10" setOpen={setOpen} />
 		</div>
 	);
 };
-export default Administrateur;
+export default Menu;

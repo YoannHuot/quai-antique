@@ -100,33 +100,52 @@ $products = [
 
 $menus = [
     [
-        'titre' => 'Menu du jour',
-        'prix' => 25.00,
-        'products' => [
-            ['type' => 'entree', 'product_id' => 1],
-            ['type' => 'plat', 'product_id' => 6],
-            ['type' => 'dessert', 'product_id' => 12],
+        'titre' => 'Menu du Jour',
+        'formules' => [
+            [
+                'titre' => 'Formule Déjeuner', 
+                'description' => 'Un déjeuner délicieux et équilibré pour bien commencer la journée.', 
+                'prix' => 20.00
+            ],
+            [
+                'titre' => 'Formule Dîner', 
+                'description' => 'Un dîner riche et savoureux pour terminer la journée en beauté.', 
+                'prix' => 30.00
+            ],
         ],
     ],
     [
-        'titre' => "Menu Savoy'art",
-        'prix' => 51.00,
-        'products' => [
-            ['type' => 'entree', 'product_id' => 2],
-            ['type' => 'plat', 'product_id' => 7],
-            ['type' => 'dessert', 'product_id' => 9],
+        'titre' => 'Menu Gourmet',
+        'formules' => [
+            [
+                'titre' => 'Formule Déjeuner Gourmet', 
+                'description' => 'Un déjeuner gourmet pour les amateurs de bonne cuisine.', 
+                'prix' => 40.00
+            ],
+            [
+                'titre' => 'Formule Dîner Gourmet', 
+                'description' => 'Un dîner gourmet pour une expérience culinaire inoubliable.', 
+                'prix' => 50.00
+            ],
         ],
     ],
     [
-        'titre' => "Menu de Mamie",
-        'prix' => 38.00,
-        'products' => [
-            ['type' => 'entree', 'product_id' => 3],
-            ['type' => 'plat', 'product_id' => 8],
-            ['type' => 'dessert', 'product_id' => 10],
+        'titre' => 'Menu Découverte',
+        'formules' => [
+            [
+                'titre' => 'Formule Déjeuner Découverte', 
+                'description' => 'Découvrez de nouvelles saveurs avec notre formule déjeuner.', 
+                'prix' => 25.00
+            ],
+            [
+                'titre' => 'Formule Dîner Découverte', 
+                'description' => 'Explorez le monde à travers notre formule dîner.', 
+                'prix' => 35.00
+            ],
         ],
     ],
 ];
+
 
 
 function insertProducts($products, $db) {
@@ -155,17 +174,17 @@ function insertMenus($menus, $db) {
         $count = $stmt->fetchColumn();
 
         if ($count == 0) {
-            $stmt = $db->prepare("INSERT INTO Menus (titre, prix) VALUES (:titre, :prix)");
+            $stmt = $db->prepare("INSERT INTO Menus (titre) VALUES (:titre)");
             $stmt->bindParam(':titre', $menu['titre']);
-            $stmt->bindParam(':prix', $menu['prix']);
             $stmt->execute();
 
             $menu_id = $db->lastInsertId();
-            foreach ($menu['products'] as $product) {
-                $stmt = $db->prepare("INSERT INTO Menu_Products (menu_id, product_id, type) VALUES (:menu_id, :product_id, :type)");
+            foreach ($menu['formules'] as $formule) {
+                $stmt = $db->prepare("INSERT INTO Formules (titre, description, prix, menu_id) VALUES (:titre, :description, :prix, :menu_id)");
+                $stmt->bindParam(':titre', $formule['titre']);
+                $stmt->bindParam(':description', $formule['description']);
+                $stmt->bindParam(':prix', $formule['prix']);
                 $stmt->bindParam(':menu_id', $menu_id);
-                $stmt->bindParam(':product_id', $product['product_id']);
-                $stmt->bindParam(':type', $product['type']);
                 $stmt->execute();
             }
         }
@@ -184,6 +203,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $query = $db->prepare("SELECT * FROM Menus");
         $query->execute();
         $menus = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($menus as &$menu) {
+            $query = $db->prepare("SELECT * FROM Formules WHERE menu_id = :menu_id");
+            $query->bindParam(':menu_id', $menu['id']);
+            $query->execute();
+            $formules = $query->fetchAll(PDO::FETCH_ASSOC);
+            $menu['formules'] = $formules;
+        }
+
         return $menus;
     }
 
@@ -194,16 +222,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         return $products;
     }
 
-    function getMenuProducts($db) {
-        $query = $db->prepare("SELECT * FROM Menu_Products");
-        $query->execute();
-        $menu_products = $query->fetchAll(PDO::FETCH_ASSOC);
-        return $menu_products;
-    }
-
     $menus = getMenus($db);
     $products = getProducts($db);
-    $menu_products = getMenuProducts($db);
 
-    echo json_encode(['menus' => $menus, 'products' => $products, 'menu_products' => $menu_products]);
+    echo json_encode(['menus' => $menus, 'products' => $products]);
 }

@@ -53,18 +53,17 @@ try {
     $db->exec("
     CREATE TABLE IF NOT EXISTS Menus (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        titre VARCHAR(50),
-        prix DECIMAL(5,2)
+        titre VARCHAR(50)
     )");
     
     $db->exec("
-    CREATE TABLE IF NOT EXISTS Menu_Products (
+    CREATE TABLE IF NOT EXISTS Formules (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        titre VARCHAR(50),
+        description TEXT,
+        prix DECIMAL(5,2),
         menu_id INT,
-        product_id INT,
-        type ENUM('plat', 'entree', 'dessert'),
-        FOREIGN KEY (menu_id) REFERENCES Menus(id),
-        FOREIGN KEY (product_id) REFERENCES Products(id)
+        FOREIGN KEY (menu_id) REFERENCES Menus(id)
     )");
    
     $db->exec("

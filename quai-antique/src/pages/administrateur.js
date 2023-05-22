@@ -12,28 +12,19 @@ import axios from "axios";
 
 const Menu = () => {
 	const [open, setOpen] = useState(false);
-	const [auth, setAuth] = useState(false);
 
 	const [products, setProducts] = useState();
 	const [showProducts, setShowProducts] = useState();
-	const [menuProducts, setMenuProducts] = useState();
 	const [menu, setMenu] = useState();
-	const [showMenu, setShowMenu] = useState();
 
 	const [handleCarte, setHandleCarte] = useState(false);
 	const [handleMenu, setHandleMenu] = useState(false);
 	const [handleTime, setHandleTime] = useState(false);
 	const [handleStars, setHandleStars] = useState(false);
 
-	const deviceType = useDeviceType();
+	const [refreshDelete, setRefreshDelete] = useState(false);
 
 	useEffect(() => {
-		if (menu) {
-			console.log(menu);
-
-			setShowMenu(result);
-		}
-
 		if (products) {
 			const typeMapping = {
 				entree: "entrée",
@@ -86,9 +77,8 @@ const Menu = () => {
 				);
 			}
 		};
-
 		fetchProducts();
-	}, []);
+	}, [refreshDelete]);
 
 	return (
 		<div>
@@ -116,26 +106,26 @@ const Menu = () => {
 					</div>
 					<div className="w-full flex-row flex justify-between">
 						<button
-							className="bg-primary p-2 text-white w-32 h-28"
+							className="bg-primary p-2 text-white w-32 h-28 mr-2"
 							onClick={() => setHandleCarte(!handleCarte)}
 						>
 							{handleCarte ? "Fermer" : "Modifier la carte"}
 						</button>
 						<button
-							className="bg-primary p-2 text-white w-32 h-28"
+							className="bg-primary p-2 text-white w-32 h-28 mr-2"
 							onClick={() => setHandleMenu(!handleMenu)}
 						>
 							{handleMenu ? "Fermer" : "Modifier les menus"}
 						</button>
 						<button
-							className="bg-primary p-2 text-white w-32 h-28"
+							className="bg-primary p-2 text-white w-32 h-28 mr-2"
 							onClick={() => setHandleTime(!handleTime)}
 						>
 							{handleTime ? "Fermer" : "Modifier les horaires"}
 						</button>
 
 						<button
-							className="bg-primary p-2 text-white w-32 h-28"
+							className="bg-primary p-2 text-white w-32 h-28 "
 							onClick={() => setHandleStars(!handleStars)}
 						>
 							{handleStars ? "Fermer" : "Modifier les produits phares"}
@@ -147,6 +137,7 @@ const Menu = () => {
 						<AdminHandleCarte
 							showProducts={showProducts}
 							products={products}
+							setRefreshDelete={setRefreshDelete}
 						/>
 					)}
 					{handleStars && <div>WORK IN PROGRESS</div>}

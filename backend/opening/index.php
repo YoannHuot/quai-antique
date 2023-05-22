@@ -40,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
-
     echo json_encode($openingHours);
 
 };

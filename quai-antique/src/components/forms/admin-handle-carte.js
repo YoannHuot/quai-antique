@@ -3,12 +3,14 @@ import React, { useRef, useState, useEffect } from "react";
 import _ from "underscore";
 import useDeviceType from "@/hooks/device-type";
 import axios from "axios";
+import AddProduct from "./add-product";
 
-const AdminHandleCarte = ({ showProducts, products }) => {
+const AdminHandleCarte = ({ showProducts, products, setRefreshDelete }) => {
 	const deviceType = useDeviceType();
 
 	return (
 		<div>
+			<AddProduct />
 			<div className="lg:flex lg:flex-row">
 				{_.map(showProducts, (contents, index) => {
 					let lastColum = index + 1 === products.length;
@@ -30,6 +32,7 @@ const AdminHandleCarte = ({ showProducts, products }) => {
 										description={content.description}
 										price={Math.ceil(content.price)}
 										id={content.id}
+										setRefreshDelete={setRefreshDelete}
 									/>
 								);
 							})}
@@ -37,11 +40,6 @@ const AdminHandleCarte = ({ showProducts, products }) => {
 					);
 				})}
 			</div>
-			<form className="mb-20">
-				<label>Ajouter un produit</label>
-				<input className="w-full bg-red-400" value={"type"} type="select" />
-				<input className="w-full bg-red-400" value={"ajouter un titre"} />
-			</form>
 		</div>
 	);
 };

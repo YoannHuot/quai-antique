@@ -150,6 +150,8 @@ $menus = [
 
 function insertProducts($products, $db) {
     foreach ($products as $product) {
+        $stmt = $db->prepare("SELECT COUNT(*) FROM Products WHERE LOWER(titre) = LOWER(:titre) AND deleted = 0");
+
         $stmt = $db->prepare("SELECT COUNT(*) FROM Products WHERE LOWER(titre) = LOWER(:titre)");
         $stmt->bindParam(':titre', $product['title']);
         $stmt->execute();
@@ -191,14 +193,21 @@ function insertMenus($menus, $db) {
     }
 }
 
+$flagFile = 'insertion_done.txt';
+
+// Fonction qui permet de n'appeler qu'une seule fois l'insertion des données initiales, autre que celles rentrées par l'admin.
+if (!file_exists($flagFile)) {
+    insertProducts($products, $db);
+    insertMenus($menus, $db);
+
+    file_put_contents($flagFile, 'insertion done');
+}
+
 
 
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    insertProducts($products, $db);
-    insertMenus($menus, $db);
-
     function getMenus($db) {
         $query = $db->prepare("SELECT * FROM Menus");
         $query->execute();
@@ -224,6 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $menus = getMenus($db);
     $products = getProducts($db);
+
 
     echo json_encode(['menus' => $menus, 'products' => $products]);
 }

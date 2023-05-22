@@ -3,19 +3,19 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const CardAdmin = ({ title, description, price, id }) => {
+const CardAdmin = ({ title, description, price, id, setRefreshDelete }) => {
 	const deleteProduct = (e) => {
 		e.preventDefault();
 		const cookie = Cookies.get("jwt");
-		console.log(Cookies);
 		axios
 			.delete("http://localhost:8000/administrator/products.php", {
 				params: {
 					token: cookie,
+					cardId: id,
 				},
 			})
-			.then((response) => {
-				console.log(response.data);
+			.then(() => {
+				setRefreshDelete(true);
 			})
 			.catch((error) => {
 				console.log("error : ");
@@ -38,17 +38,17 @@ const CardAdmin = ({ title, description, price, id }) => {
 			<label>Titre :</label>
 			<input
 				className="font-bold uppercase border-gold my-2 py-1 border w-full"
-				value={title}
+				defaultValue={title}
 			/>
 			<label>Description :</label>
 			<input
 				className=" border-gold my-2 py-1 border w-full"
-				value={description}
+				defaultValue={description}
 			/>
 			<label>Prix :</label>
 			<input
 				className=" border-gold my-2 py-1 border w-full"
-				value={price}
+				defaultValue={price}
 			/>
 
 			<button className=" px-4 border border-white hover:bg-gold hover:text-black">

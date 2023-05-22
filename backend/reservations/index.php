@@ -4,8 +4,6 @@ require_once '../functions.php';
 require_once '../functions-bdd.php';
 
 
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = getRequestDataBody();
     $token = $data["token"];
@@ -74,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             exit();
         }
 
-        $userID = $payload->id; // Supposons que l'ID de l'utilisateur est stocké dans le payload du token
+        $userID = $payload->id; 
 
         $stmt = $db->prepare("DELETE FROM Reservations WHERE userID = :userID");
         $stmt->execute([':userID' => $currentUser]);

@@ -5,9 +5,12 @@ require_once '../config/data.php';
 require_once '../functions-bdd.php';
 require_once '../functions-opening.php';
 
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
  
     $token = $_GET['token'];
+    $cardId = $_GET['cardId'];
     $decodedToken = decodeJwt($token, SECRET);
 
     $header = $decodedToken[0];
@@ -19,34 +22,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
     $isAdmin =  CurrentUserIsAdmin($db, $currentUser, $currentUserMail);
 
-   if($isAdmin) { 
-        if($payload) {
-            $echo("on attend la card à delete");
-        } else { 
-            echo json_encode(['success' => false, 'message' => 'Token non valide']);
-            exit();
-        }
-    } else { 
-        echo json_encode(['success' => false, 'message' => "L'utilisateur n'est pas administrateur"]);
-        exit();
-    } 
+
    
-    // try {
-     
+    try {
+        if($isAdmin) { 
+            if($payload) {
 
+                $stmt = $db->prepare("DELETE FROM Products WHERE id = :cardId");
+                $stmt->execute([':cardId' => $cardId]);
+                
 
-    //     $userID = $payload->id; // Supposons que l'ID de l'utilisateur est stocké dans le payload du token
+            if($stmt->rowCount() > 0) {
+                echo json_encode(['success' => true, 'message' => 'Produit supprimé avec succès']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors de la suppression du produit']);
+            }
 
-    //     $stmt = $db->prepare("DELETE FROM Reservations WHERE userID = :userID");
-    //     $stmt->execute([':userID' => $currentUser]);
+            } else { 
+                echo json_encode(['success' => false, 'message' => 'Token non valide']);
+                exit();
+            }
+        } 
+        else { 
+            echo json_encode(['success' => false, 'message' => "L'utilisateur n'est pas administrateur"]);
+            exit();
+        } 
 
-    //     if($stmt->rowCount() > 0) {
-    //         echo json_encode(['success' => true, 'message' => 'Réservation annulée avec succès']);
-    //     } else {
-    //         echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'annulation de la réservation']);
-    //     }
-
-    // } catch (PDOException $e) {
-    //     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
-    // }
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
 }

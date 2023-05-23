@@ -5,12 +5,12 @@ import useDeviceType from "@/hooks/device-type";
 import axios from "axios";
 import AddProduct from "./add-product";
 
-const AdminHandleCarte = ({ showProducts, products, setRefreshDelete }) => {
+const AdminHandleCarte = ({ showProducts, products, setRefresh, refresh }) => {
 	const deviceType = useDeviceType();
 
 	return (
 		<div>
-			<AddProduct />
+			<AddProduct setRefresh={setRefresh} refresh={refresh} />
 			<div className="lg:flex lg:flex-row">
 				{_.map(showProducts, (contents, index) => {
 					let lastColum = index + 1 === products.length;
@@ -28,11 +28,14 @@ const AdminHandleCarte = ({ showProducts, products, setRefreshDelete }) => {
 							{_.map(contents.products, (content, index) => {
 								return (
 									<CardAdmin
+										key={index}
 										title={content.title}
 										description={content.description}
 										price={Math.ceil(content.price)}
 										id={content.id}
-										setRefreshDelete={setRefreshDelete}
+										setRefresh={setRefresh}
+										refresh={refresh}
+										type={content.type}
 									/>
 								);
 							})}

@@ -203,37 +203,3 @@ if (!file_exists($flagFile)) {
     file_put_contents($flagFile, 'insertion done');
 }
 
-
-
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    function getMenus($db) {
-        $query = $db->prepare("SELECT * FROM Menus");
-        $query->execute();
-        $menus = $query->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($menus as &$menu) {
-            $query = $db->prepare("SELECT * FROM Formules WHERE menu_id = :menu_id");
-            $query->bindParam(':menu_id', $menu['id']);
-            $query->execute();
-            $formules = $query->fetchAll(PDO::FETCH_ASSOC);
-            $menu['formules'] = $formules;
-        }
-
-        return $menus;
-    }
-
-    function getProducts($db) {
-        $query = $db->prepare("SELECT * FROM Products");
-        $query->execute();
-        $products = $query->fetchAll(PDO::FETCH_ASSOC);
-        return $products;
-    }
-
-    $menus = getMenus($db);
-    $products = getProducts($db);
-
-
-    echo json_encode(['menus' => $menus, 'products' => $products]);
-}

@@ -22,7 +22,7 @@ const Menu = () => {
 	const [handleTime, setHandleTime] = useState(false);
 	const [handleStars, setHandleStars] = useState(false);
 
-	const [refreshDelete, setRefreshDelete] = useState(false);
+	const [refresh, setRefresh] = useState(false);
 
 	useEffect(() => {
 		if (products) {
@@ -34,23 +34,21 @@ const Menu = () => {
 
 			const productsSorting = Object.values(
 				products.reduce((acc, product) => {
-					// Convertir le type du produit à son équivalent en anglais
 					const title = typeMapping[product.type];
 
 					if (!acc[title]) {
-						// Si ce groupe n'existe pas encore, le créer
 						acc[title] = {
 							title: title,
 							products: [],
 						};
 					}
 
-					// Ajouter le produit au groupe approprié
 					acc[title].products.push({
 						id: product.id.toString(),
 						title: product.titre,
 						description: product.description,
 						price: product.prix,
+						type: product.type,
 					});
 
 					return acc;
@@ -64,7 +62,7 @@ const Menu = () => {
 		const fetchProducts = async () => {
 			try {
 				const response = await axios.get(
-					"http://localhost:8000/administrator/index.php"
+					"http://localhost:8000/administrator/products.php"
 				);
 				if (response.status === 200) {
 					setProducts(response.data.products);
@@ -78,7 +76,7 @@ const Menu = () => {
 			}
 		};
 		fetchProducts();
-	}, [refreshDelete]);
+	}, [refresh]);
 
 	return (
 		<div>
@@ -137,7 +135,8 @@ const Menu = () => {
 						<AdminHandleCarte
 							showProducts={showProducts}
 							products={products}
-							setRefreshDelete={setRefreshDelete}
+							setRefresh={setRefresh}
+							refresh={refresh}
 						/>
 					)}
 					{handleStars && <div>WORK IN PROGRESS</div>}

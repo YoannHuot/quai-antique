@@ -1,15 +1,19 @@
 import React, { useRef, useState, useEffect } from "react";
 import _ from "underscore";
 import axios from "axios";
+import Cookies from "js-cookie";
 
-const AddProduct = () => {
+const AddProduct = ({ setRefresh, refresh }) => {
 	const typesSelecte = ["entree", "plat", "dessert"];
 	const [title, setTitle] = useState("");
 	const [prix, setPrix] = useState("");
 	const [description, setDescription] = useState("");
-	const [type, setType] = useState();
+	const [type, setType] = useState("entree");
 
-	const addProduct = async () => {
+	const [checkValidity, setCheckValidity] = useState(null);
+
+	const addProduct = async (e) => {
+		e.preventDefault();
 		let payload = {
 			title: title,
 			price: prix,
@@ -17,60 +21,74 @@ const AddProduct = () => {
 			description: description,
 		};
 
-		console.log(payload);
-		// try {
-		// 	const response = await axios.post(
-		// 		"http://localhost:8000/administrator/products.php"
-		// 	);
-		// 	if (response.status === 200) {
-		// 		setProducts(response.data.products);
-		// 		setMenu(response.data.menus);
-		// 	}
-		// } catch (error) {
-		// 	console.error(
-		// 		"Erreur lors de la récupération des produits : ",
-		// 		error
-		// 	);
-		// }
+		const regex = /^\d+$/;
+		let checkPrice = regex.test(prix);
+
+		if (title.length <= 3 || !checkPrice || description.length <= 0) {
+			setCheckValidity("Les informations sont incorrects");
+			return;
+		}
+
+		try {
+			const cookie = Cookies.get("jwt");
+
+			const response = await axios.post(
+				"http://localhost:8000/administrator/products.php",
+				{ payload: payload, token: cookie }
+			);
+			if (response.status === 200) {
+				console.log(response.data);
+				setRefresh(!refresh);
+			}
+		} catch (error) {
+			console.error("Erreur lors de l'insertion des produits: ", error);
+		}
 	};
+
+	//
 	return (
 		<>
 			<h2 className="capitalize text-xl font-Laila font-medium text-primary">
 				Ajouter un produit
 			</h2>
 			<div className="w-16 bg-gold h-0.5 mb-4" />
-			<form className="bg-primary text-gray-400 rounded-md m-2 p-2 flex flex-col relative">
-				<label>Titre :</label>
+			<form className="bg-primary text-black rounded-md m-2 p-2 flex flex-col relative">
+				<label>Type :</label>
 				<select
 					className="border border-black w-40 md:w-52 h-8 rounded-lg bg-primary text-white font-semibold pl-2"
 					onChange={(e) => {
-						setGuests(e.target.value);
+						setType(e.target.value);
 					}}
 				>
-					{[...Array(59)].map((_, i) => (
-						<option key={i} value={i + 1}>
-							{i + 1}
+					{typesSelecte.map((types, i) => (
+						<option key={i} value={types}>
+							{types}
 						</option>
 					))}
 				</select>
 				<label>Titre :</label>
 				<input
-					className="uppercase border-gold my-2 pl-2 py-1 border w-full"
-					defaultValue={"title"}
+					className="border-gold my-2 pl-2 py-1 border w-full"
+					placeholder="titre "
 					onChange={(e) => setTitle(e.target.value)}
 				/>
 
 				<label>Description :</label>
 				<input
 					className=" border-gold my-2 pl-2 py-1 border w-full"
-					defaultValue={"description"}
+					placeholder="description "
 					onChange={(e) => setDescription(e.target.value)}
 				/>
 				<label>Prix :</label>
 				<input
-					className=" border-gold my-2 pl-2 py-1 border w-full"
-					defaultValue={"price"}
-					onChange={(e) => setPrix(e.target.value)}
+					className="border-gold my-2 pl-2 py-1 border w-full"
+					type="number"
+					placeholder="prix "
+					onChange={(e) => {
+						if (e.target.validity.valid) {
+							setPrix(e.target.value);
+						}
+					}}
 				/>
 
 				<button
@@ -81,6 +99,9 @@ const AddProduct = () => {
 				>
 					Valider
 				</button>
+				{checkValidity && (
+					<span className="text-white ">Echec : {checkValidity}</span>
+				)}
 			</form>
 		</>
 	);

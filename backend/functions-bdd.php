@@ -52,9 +52,9 @@ function CurrentUserIsAdmin($db, $id, $mail)
 
 
 /*
-* Requête d'insertion dans la base de données selon le rôle
+* Requête d'insertion des users dans la base de données 
 */
-function insertData($db, $table, $profil, $nom, $email, $prenom, $city, $password, $allergies)
+function insertUser($db, $table, $profil, $nom, $email, $prenom, $city, $password, $allergies)
 {
     try {
         $db->beginTransaction();
@@ -156,5 +156,50 @@ function checkAvailableSeats($db, $date, $hours) {
         return false; 
     } catch (PDOException $e) {
         return $e->getMessage();
+    }
+}
+
+function insertProduct($db, $table, $description, $prix, $type, $titre)
+{
+    try {
+        $db->beginTransaction();
+
+        $stmt = $db->prepare("INSERT INTO $table (type, titre, description, prix) VALUES (:type, :titre, :description, :prix)");
+
+        $stmt->bindParam(':type', $type);
+        $stmt->bindParam(':titre', $titre);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':prix', $prix);
+
+        $stmt->execute();
+
+        $db->commit();
+        echo "Success";
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo "Failed: " . $e->getMessage();
+    }
+}
+
+function modifyProduct($db, $table, $id, $description, $prix, $type, $titre)
+{
+    try {
+        $db->beginTransaction();
+
+        $stmt = $db->prepare("UPDATE $table SET type = :type, titre = :titre, description = :description, prix = :prix WHERE id = :id");
+
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':type', $type);
+        $stmt->bindParam(':titre', $titre);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':prix', $prix);
+
+        $stmt->execute();
+
+        $db->commit();
+        echo "Success";
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo "Failed: " . $e->getMessage();
     }
 }

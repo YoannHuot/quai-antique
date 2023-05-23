@@ -56,6 +56,7 @@ try {
         titre VARCHAR(50)
     )");
     
+
     $db->exec("
     CREATE TABLE IF NOT EXISTS Formules (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -66,21 +67,24 @@ try {
         FOREIGN KEY (menu_id) REFERENCES Menus(id)
     )");
    
+
     $db->exec("
-        CREATE TABLE IF NOT EXISTS ProductsPhare (
+    CREATE TABLE IF NOT EXISTS ProductsPhare (
             id INT AUTO_INCREMENT PRIMARY KEY,
             titre VARCHAR(50),
             photo VARCHAR(255)
         )");
- 
-        
-    $db->exec("
-        CREATE TABLE IF NOT EXISTS DaysOpen (
+   
+    
+    
+        $db->exec("
+    CREATE TABLE IF NOT EXISTS DaysOpen (
             id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             dayOfWeek INT(1) UNSIGNED NOT NULL  
         )");
-
     
+
+   
     $db->exec("
     CREATE TABLE IF NOT EXISTS OpeningHours (
         id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -90,6 +94,7 @@ try {
         closingTime TIME
     )");
 
+    
     $db->exec("
     CREATE TABLE IF NOT EXISTS Reservations (
         id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,

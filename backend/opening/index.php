@@ -41,5 +41,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         return $result;
     }
     echo json_encode($openingHours);
-
 };

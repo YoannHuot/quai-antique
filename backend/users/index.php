@@ -16,11 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if($isAdminSignIn === 1) { 
             $allergyIds = implode(',', array_map('strval', $allergies));
-            insertData($db, 'User', 'administrateur', $nom, $email, $prenom, $city, $passwordHashed, $allergyIds);
+            insertUser($db, 'User', 'administrateur', $nom, $email, $prenom, $city, $passwordHashed, $allergyIds);
 
         } else { 
             $allergyIds = implode(',', array_map('strval', $allergies));
-            insertData($db, 'User', 'utilisateur', $nom, $email, $prenom, $city, $passwordHashed, $allergyIds);
+            insertUser($db, 'User', 'utilisateur', $nom, $email, $prenom, $city, $passwordHashed, $allergyIds);
         }
     }
 };

@@ -1,9 +1,7 @@
 <?php 
-require_once '../config/config.php';
+require_once '../ini/ini.php';
 require_once '../functions.php';
-require_once '../config/data.php';
 require_once '../functions-bdd.php';
-require_once '../functions-opening.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     function getMenus($db) {
@@ -51,8 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
     $isAdmin =  CurrentUserIsAdmin($db, $currentUser, $currentUserMail);
 
-
-   
     try {
         if($isAdmin) { 
             if($payload) {
@@ -83,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $data = getRequestDataBody();
     $token = $data["token"];
     $decodedToken = decodeJwt($token, SECRET);

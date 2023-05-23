@@ -36,8 +36,7 @@ function checkUserLogin($db, $email, $password)
         return $user;
     } else {
         // Return an error message as JSON
-        var_dump($user["mdp"]);
-        echo json_encode(array("error" => "Invalid login information"));
+        echo 'Informations incorrectes';
     }
 }
 

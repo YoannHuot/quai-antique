@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import _ from "underscore";
 import { Inter } from "next/font/google";
+import axios from "axios";
 import Fade from "@/components/fade";
 import PopUp from "@/components/popups/popup.js";
 
@@ -18,34 +19,7 @@ export default function Home() {
 	const texts = ["73000, rue de Boigne", "Chambéry", "par Arnaud Michant"];
 	const menu = ["Le menu", "Arnaud Michant", "Connexion"];
 
-	const images = [
-		{
-			id: 1,
-			title: "Raclette gastronomique",
-			img: "/images/cheese.jpg",
-		},
-		{
-			id: 2,
-
-			title: "De bresse & de Savoie",
-			img: "/images/chicken.jpg",
-		},
-		{
-			id: 3,
-			title: "Quiche du Dimanche soir",
-			img: "/images/quiche.jpg",
-		},
-		{
-			id: 4,
-			title: "La rivière d'écailles",
-			img: "/images/truite.jpg",
-		},
-		{
-			id: 5,
-			title: "Au bois jolie",
-			img: "/images/stew.jpg",
-		},
-	];
+	const [products, setProducts] = useState();
 
 	const [footerWidth, setFooterWidth] = useState("");
 	const [open, setOpen] = useState(false);
@@ -81,6 +55,26 @@ export default function Home() {
 		return () => {
 			window.removeEventListener("resize", handleResize);
 		};
+	}, []);
+
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				const response = await axios.get(
+					`${"/backend"}/administrator/products-phare.php`
+				);
+				if (response.status === 200) {
+					setProducts(response.data.products);
+				}
+			} catch (error) {
+				console.error(
+					"Erreur lors de la récupération des produits : ",
+					error
+				);
+			}
+		};
+
+		fetchProducts();
 	}, []);
 
 	/*
@@ -185,23 +179,25 @@ export default function Home() {
 						Nos plats signatures
 					</h2>
 					<div className="w-full h-full flex lg:flex-row card-container xs:flex-col">
-						{_.map(images, (image, index) => {
+						{_.map(products, (product, index) => {
 							return (
 								<div
 									key={index}
 									className={`lg:rounded-xl h-4/5 w-full flex-1 card overflow-hidden mt-4 ${
-										index < images.length - 1 ? "lg:mr-1" : ""
+										product < product.length - 1 ? "lg:mr-1" : ""
 									}`}
 								>
 									<div
 										className="relative h-full w-full bg-center bg-no-repeat bg-red-200 flex items-end justify-center"
 										style={{
-											backgroundImage: `url(${image.img})`,
+											backgroundImage: `url(${"/backend"}/image.php?file=${
+												product.photo
+											})`,
 										}}
 									>
 										<div className="absolute bottom-0 z-10 w-full h-full lg:h-1/4 bg-gradient-to-t from-black via-black to-transparent opacity-50" />
 										<span className="relative z-20 text-2xl lg:text-3xl capitalize text-white font-Libre font-semibold h-40 text-center flex justify-center items-center">
-											{image.title}
+											{product.titre}
 										</span>
 									</div>
 								</div>
@@ -227,30 +223,28 @@ export default function Home() {
 						<div className="chief-descripton h-full w-full lg:w-1/2  flex  flex-col lg:flex-row lg:justify-evenly  ">
 							<div className="w-full lg:w-52 ">
 								<span className="font-Laila text-base lg:text-lg">
-									Pellentesque nec finibus sem, ac facilisis erat.
-									Fusce elementum dui a eros malesuada, fermentum
-									volutpat mi mollis. Aliquam eu purus in ligula
-									placerat mattis. Vivamus turpis sem, cursus in leo
-									sed, porttitor aliquam lorem. Phasellus convallis
-									cursus nibh et molestie. Quisque porta quam nec
-									eleifend convallis. Nam sit amet ligula ipsum.lorem.
-									Phasellus convallis cursus nibh et molestie. Quisque
-									porta quam nec eleifend convallis. Nam sit amet
-									ligula ipsum.
+									Arnaud Michant, un chef renommé pour sa maîtrise
+									remarquable de l'art culinaire, est le cœur et l'âme
+									du restaurant Le Quai Antique. Originaire de la
+									région de Savoie en France, ses premiers souvenirs
+									culinaires sont ceux de sa grand-mère, une
+									merveilleuse cuisinière, qui lui préparait de
+									délicieux plats traditionnels. L'art de la cuisine
+									est donc pour lui un héritage familial.
 								</span>
 							</div>
 							<div className="w-full lg:w-52 lg:mt-96">
 								<span className="font-Laila text-base lg:text-lg">
-									Pellentesque nec finibus sem, ac facilisis erat.
-									Fusce elementum dui a eros malesuada, fermentum
-									volutpat mi mollis. Aliquam eu purus in ligula
-									placerat mattis. Vivamus turpis sem, cursus in leo
-									sed, porttitor aliquam lorem. Phasellus convallis
-									cursus nibh et molestie. Quisque porta quam nec
-									eleifend convallis. Nam sit amet ligula ipsum.lorem.
-									Phasellus convallis cursus nibh et molestie. Quisque
-									porta quam nec eleifend convallis. Nam sit amet
-									ligula ipsum.
+									Chef Arnaud est particulièrement célèbre pour sa
+									manière unique d'allier tradition et modernité dans
+									ses plats. Il met un point d'honneur à utiliser les
+									meilleurs produits locaux et de saison, en y
+									apportant une touche créative qui donne une nouvelle
+									dimension à la cuisine classique. Son menu au
+									restaurant Le Quai Antique est un mélange subtil de
+									saveurs, une fusion de l'authentique cuisine
+									française avec des influences de la cuisine moderne
+									mondiale.
 								</span>
 							</div>
 						</div>
@@ -258,7 +252,7 @@ export default function Home() {
 				</section>
 			</div>
 
-			<Footer />
+			<Footer setOpen={setOpen} />
 
 			<PopUp open={open} setOpen={setOpen}>
 				<header className="w-full flex justify-between items-center">

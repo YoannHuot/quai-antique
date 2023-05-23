@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+    <style>
+        .class {
+            fill: #fff;
+            stroke: #000;
+            stroke-width: 2;
+        }
+
+        .attribute {
+            font-size: 14px;
+        }
+
+        .relation {
+            fill: none;
+            stroke: #000;
+            stroke-width: 1;
+            marker-end: url(#arrow);
+        }
+
+        .cardinal {
+            font-size: 12px;
+        }
+    </style>
+
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+
+    <!-- User class -->
+    <rect x="50" y="50" width="150" height="120" rx="10" ry="10" class="class" />
+    <text x="125" y="85" text-anchor="middle" class="attribute">User</text>
+    <text x="60" y="110" class="attribute">+ id: int</text>
+    <text x="60" y="130" class="attribute">+ profil: enum</text>
+    <text x="60" y="150" class="attribute">+ nom: varchar</text>
+    <text x="60" y="170" class="attribute">+ email: varchar</text>
+    <text x="60" y="190" class="attribute">+ prenom: varchar</text>
+    <text x="60" y="210" class="attribute">+ ville: varchar</text>
+    <text x="60" y="230" class="attribute">+ mdp: varchar</text>
+    <text x="60" y="250" class="attribute">+ allergies: varchar</text>
+
+    <!-- Products class -->
+    <rect x="300" y="50" width="150" height="120" rx="10" ry="10" class="class" />
+    <text x="375" y="85" text-anchor="middle" class="attribute">Products</text>
+    <text x="310" y="110" class="attribute">+ id: int</text>
+    <text x="310" y="130" class="attribute">+ type: enum</text>
+    <text x="310" y="150" class="attribute">+ titre: varchar</text>
+    <text x="310" y="170" class="attribute">+ description: text</text>
+    <text x="310" y="190" class="attribute">+ prix: decimal</text>
+
+    <!-- Menus class -->
+    <rect x="550" y="50" width="150" height="80" rx="10" ry="10" class="class" />
+    <text x="625" y="85" text-anchor="middle" class="attribute">Menus</text>
+    <text x="560" y="110" class="attribute">+ id: int</text>
+    <text x="560" y="130" class="attribute">+ titre: varchar</text>
+
+    <!-- Formules class -->
+    <rect x="550" y="180" width="150" height="120" rx="10" ry="10" class="class"
+/>
+<text x="625" y="215" text-anchor="middle" class="attribute">Formules</text>
+<text x="560" y="240" class="attribute">+ id: int</text>
+<text x="560" y="260" class="attribute">+ titre: varchar</text>
+<text x="560" y="280" class="attribute">+ description: text</text>
+<text x="560" y="300" class="attribute">+ prix: decimal</text>
+<text x="560" y="320" class="attribute">+ menu_id: int</text>
+
+<!-- ProductsPhare class -->
+<rect x="550" y="340" width="150" height="100" rx="10" ry="10" class="class" />
+<text x="625" y="375" text-anchor="middle" class="attribute">ProductsPhare</text>
+<text x="560" y="400" class="attribute">+ id: int</text>
+<text x="560" y="420" class="attribute">+ productId: int</text>
+<text x="560" y="440" class="attribute">+ photo: varchar</text>
+
+<!-- Associations -->
+<path d="M 200 110 L 300 110" class="relation" />
+<text x="250" y="105" text-anchor="middle" class="cardinal">1</text>
+<text x="275" y="105" text-anchor="middle" class="cardinal">1..*</text>
+<path d="M 450 110 L 550 110" class="relation" />
+<text x="500" y="105" text-anchor="middle" class="cardinal">1</text>
+<text x="525" y="105" text-anchor="middle" class="cardinal">1..*</text>
+<path d="M 450 190 L 550 190" class="relation" />
+<text x="500" y="185" text-anchor="middle" class="cardinal">1</text>
+<text x="525" y="185" text-anchor="middle" class="cardinal">0..1</text>
+<path d="M 450 250 L 550 250" class="relation" />
+<text x="500" y="245" text-anchor="middle" class="cardinal">1</text>
+<text x="525" y="245" text-anchor="middle" class="cardinal">0..*</text>
+<path d="M 450 380 L 550 380" class="relation" />
+<text x="500" y="375" text-anchor="middle" class="cardinal">1</text>
+<text x="525" y="375" text-anchor="middle" class="cardinal">0..1</text>
+
+<!-- Generalization -->
+<path d="M 125 170 L 300 170" class="relation" />
+<text x="212" y="165" text-anchor="middle" class="cardinal">1</text>
+<text x="237" y="165" text-anchor="middle" class="cardinal">1</text>
+</svg>

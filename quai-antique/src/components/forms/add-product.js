@@ -3,7 +3,7 @@ import _ from "underscore";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const AddProduct = ({ setRefresh, refresh }) => {
+const AddProduct = ({ setRefresh, refresh, param }) => {
 	const typesSelecte = ["entree", "plat", "dessert"];
 	const [title, setTitle] = useState("");
 	const [prix, setPrix] = useState("");
@@ -21,6 +21,7 @@ const AddProduct = ({ setRefresh, refresh }) => {
 			description: description,
 		};
 
+		console.log(payload);
 		const regex = /^\d+$/;
 		let checkPrice = regex.test(prix);
 
@@ -33,7 +34,7 @@ const AddProduct = ({ setRefresh, refresh }) => {
 			const cookie = Cookies.get("jwt");
 
 			const response = await axios.post(
-				"http://localhost:8000/administrator/products.php",
+				`${"/backend"}/administrator/${param}.php`,
 				{ payload: payload, token: cookie }
 			);
 			if (response.status === 200) {
@@ -48,24 +49,29 @@ const AddProduct = ({ setRefresh, refresh }) => {
 	//
 	return (
 		<>
-			<h2 className="capitalize text-xl font-Laila font-medium text-primary">
-				Ajouter un produit
+			<h2 className="text-xl font-Laila font-medium text-primary">
+				Ajouter un {param}
 			</h2>
 			<div className="w-16 bg-gold h-0.5 mb-4" />
-			<form className="bg-primary text-black rounded-md m-2 p-2 flex flex-col relative">
-				<label>Type :</label>
-				<select
-					className="border border-black w-40 md:w-52 h-8 rounded-lg bg-primary text-white font-semibold pl-2"
-					onChange={(e) => {
-						setType(e.target.value);
-					}}
-				>
-					{typesSelecte.map((types, i) => (
-						<option key={i} value={types}>
-							{types}
-						</option>
-					))}
-				</select>
+			<form className="text-black bg-primary text-black rounded-md m-2 p-2 flex flex-col relative">
+				{param === "products" && (
+					<>
+						<label>Type :</label>
+						<select
+							className="border border-black w-40 md:w-52 h-8 rounded-lg bg-primary text-white font-semibold pl-2"
+							onChange={(e) => {
+								setType(e.target.value);
+							}}
+						>
+							{typesSelecte.map((types, i) => (
+								<option key={i} value={types}>
+									{types}
+								</option>
+							))}
+						</select>
+					</>
+				)}
+
 				<label>Titre :</label>
 				<input
 					className="border-gold my-2 pl-2 py-1 border w-full"

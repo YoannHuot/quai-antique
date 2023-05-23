@@ -60,7 +60,7 @@ const Menu = () => {
 		const fetchProducts = async () => {
 			try {
 				const response = await axios.get(
-					"http://localhost:8000/administrator/products.php"
+					`${'/backend'}/administrator/products.php`
 				);
 				if (response.status === 200) {
 					setProducts(response.data.products);

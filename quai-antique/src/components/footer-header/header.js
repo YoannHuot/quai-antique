@@ -66,8 +66,8 @@ const Header = ({
 		const handleScroll = () => {
 			if (firstSectionRef) {
 				const sectionHeight =
-					firstSectionRef.current.offsetHeight -
-					headerRef.current.offsetHeight +
+					firstSectionRef.current?.offsetHeight -
+					headerRef.current?.offsetHeight +
 					10;
 
 				if (window.scrollY >= sectionHeight) {

@@ -1,8 +1,8 @@
 <?php
 
 /* 
-* Récupération de toutes les adresses emails de tous les utilisateurs pour checker les validités.
-*/
+ * Récupération de toutes les adresses emails de tous les utilisateurs pour checker les validités.
+ */
 function fetchEmails($fetchBdd, $db)
 {
     $all_users = array();
@@ -18,12 +18,12 @@ function fetchEmails($fetchBdd, $db)
 }
 
 /*
-* Fetch current user
-*/
+ * Fetch current user
+ */
 function CurrentUserIsAdmin($db, $id, $mail)
 {
     $sql = 'SELECT * FROM User WHERE id = :id AND email = :email';
-    
+
     try {
         $request = $db->prepare($sql);
         $request->bindParam(':id', $id);
@@ -32,7 +32,7 @@ function CurrentUserIsAdmin($db, $id, $mail)
     } catch (PDOException $e) {
         die('Erreur : ' . $e->getMessage());
     }
-    
+
     $users = $request->fetchAll();
 
     if (!$users || count($users) == 0) {
@@ -40,7 +40,7 @@ function CurrentUserIsAdmin($db, $id, $mail)
     }
 
     foreach ($users as $index => $user) {
-        if($user["email"] !== "admin-quai-antique@gmail.com") {
+        if ($user["email"] !== "admin-quai-antique@gmail.com") {
             return "User is not an admin";
         } else {
             return true;
@@ -48,18 +48,15 @@ function CurrentUserIsAdmin($db, $id, $mail)
     }
 }
 
-
-
-
 /*
-* Requête d'insertion des users dans la base de données 
-*/
+ * Requête d'insertion des users dans la base de données 
+ */
 function insertUser($db, $table, $profil, $nom, $email, $prenom, $city, $password, $allergies)
 {
     try {
         $db->beginTransaction();
-            $db->exec("insert into $table (profil, nom, email, prenom, ville, mdp, allergies) values ( '$profil', '$nom', '$email', '$prenom', '$city', '$password', '$allergies')");
-    
+        $db->exec("insert into $table (profil, nom, email, prenom, ville, mdp, allergies) values ( '$profil', '$nom', '$email', '$prenom', '$city', '$password', '$allergies')");
+
         $db->commit();
         echo "Success";
     } catch (Exception $e) {
@@ -68,19 +65,20 @@ function insertUser($db, $table, $profil, $nom, $email, $prenom, $city, $passwor
     }
 }
 
-function addReservation($db, $userId, $date, $hours, $guests) {
+function addReservation($db, $userId, $date, $hours, $guests)
+{
     try {
         // Convertir la date et l'heure en objet DateTime
         $dateTime = new DateTime("$date $hours");
-        
+
         // Préparer la requête SQL
         $stmt = $db->prepare("SELECT * FROM Reservations WHERE userID = :userID AND dateTime = :dateTime");
-        
+
         // Exécutez la requête SQL et récupérez le résultat
         $stmt->execute([':userID' => $userId, ':dateTime' => $dateTime->format('Y-m-d H:i:s')]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        if($result) {
+
+        if ($result) {
             // Réservation existe déjà
             echo 'Vous avez déjà une réservaton à cette date';
         } else {
@@ -89,16 +87,17 @@ function addReservation($db, $userId, $date, $hours, $guests) {
             $stmt->execute([':userID' => $userId, ':dateTime' => $dateTime->format('Y-m-d H:i:s'), ':guests' => $guests]);
             echo 'Votre réservation a été enregistrée ! ';
         }
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         // Si une erreur se produit, retournez l'erreur
         return ['error' => $e->getMessage()];
-    } catch(Exception $e) {
+    } catch (Exception $e) {
         // Si une erreur se produit, retournez l'erreur
         return ['error' => $e->getMessage()];
     }
 }
 
-function checkUpcomingReservation($db, $userID) {
+function checkUpcomingReservation($db, $userID)
+{
     try {
 
         $now = new DateTime();
@@ -109,7 +108,7 @@ function checkUpcomingReservation($db, $userID) {
 
         if ($stmt->rowCount() > 0) {
             return true;
-        } else { 
+        } else {
             return false;
         }
 
@@ -118,7 +117,8 @@ function checkUpcomingReservation($db, $userID) {
     }
 }
 
-function getUpcomingReservation($db, $userID) {
+function getUpcomingReservation($db, $userID)
+{
     try {
         $now = new DateTime();
         $mysqlDateTime = $now->format('Y-m-d H:i:s');
@@ -128,9 +128,9 @@ function getUpcomingReservation($db, $userID) {
         $stmt->execute([':userID' => $userID, ':now' => $mysqlDateTime]);
 
         if ($stmt->rowCount() > 0) {
-            return $stmt->fetch(PDO::FETCH_ASSOC);  // Retourner les détails de la réservation
-        } else { 
-            return false;  // Aucune réservation à venir
+            return $stmt->fetch(PDO::FETCH_ASSOC); // Retourner les détails de la réservation
+        } else {
+            return false; // Aucune réservation à venir
         }
 
     } catch (PDOException $e) {
@@ -139,23 +139,35 @@ function getUpcomingReservation($db, $userID) {
 }
 
 
-function checkAvailableSeats($db, $date, $hours) {
+function checkAvailableSeats($db, $date, $hours)
+{
     try {
-        // Convertir la date et l'heure en objet DateTime
         $dateTime = new DateTime("$date $hours");
 
-        // Obtenir le nombre total de personnes ayant réservé à ce créneau horaire
+        $totalPlaces = getTotalPlaces($db);
+
         $stmt = $db->prepare("SELECT SUM(guests) AS totalGuests FROM Reservations WHERE dateTime = :dateTime");
         $stmt->execute([':dateTime' => $dateTime->format('Y-m-d H:i:s')]);
 
-        // Vérifier si le nombre total de personnes est supérieur à 60
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row && $row['totalGuests'] >= 60) {
+        if ($row && $row['totalGuests'] >= $totalPlaces) {
             return true;
         }
-        return false; 
+        return false;
     } catch (PDOException $e) {
         return $e->getMessage();
+    }
+}
+
+function getTotalPlaces($db)
+{
+    try {
+        $stmt = $db->prepare("SELECT * FROM Constants WHERE id = 'PLACES_RESERVATION'");
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['value'];
+    } catch (PDOException $e) {
+        return 60;
     }
 }
 
@@ -181,6 +193,55 @@ function insertProduct($db, $table, $description, $prix, $type, $titre)
     }
 }
 
+function insertProductPhare($db, $table, $productId, $photo)
+{
+    try {
+        $db->beginTransaction();
+
+        $stmt = $db->prepare("INSERT INTO $table (productId, photo) VALUES (:productId, :photo)");
+
+        $stmt->bindParam(':productId', $productId);
+        $stmt->bindParam(':photo', $photo);
+
+        $stmt->execute();
+
+        $db->commit();
+        echo "Success";
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo "Failed: " . $e->getMessage();
+    }
+}
+
+function updateProductPhare($db, $id, $productId, $photo)
+{
+    try {
+        $db->beginTransaction();
+
+        if ( $photo === null ) {
+            $stmt = $db->prepare("UPDATE ProductsPhare SET productId = :productId WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':productId', $productId);
+    
+            $stmt->execute();
+        } else {
+            $stmt = $db->prepare("UPDATE ProductsPhare SET productId = :productId, photo = :photo WHERE id = :id");
+            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':productId', $productId);
+            $stmt->bindParam(':photo', $photo);
+    
+            $stmt->execute();
+        }
+        
+
+        $db->commit();
+        echo "Success";
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo "Failed: " . $e->getMessage();
+    }
+}
+
 function modifyProduct($db, $table, $id, $description, $prix, $type, $titre)
 {
     try {
@@ -190,6 +251,29 @@ function modifyProduct($db, $table, $id, $description, $prix, $type, $titre)
 
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':type', $type);
+        $stmt->bindParam(':titre', $titre);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':prix', $prix);
+
+        $stmt->execute();
+
+        $db->commit();
+        echo "Success";
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo "Failed: " . $e->getMessage();
+    }
+}
+
+
+function modifyFormules($db, $table, $id, $description, $prix, $titre)
+{
+    try {
+        $db->beginTransaction();
+
+        $stmt = $db->prepare("UPDATE $table SET titre = :titre, description = :description, prix = :prix WHERE id = :id");
+
+        $stmt->bindParam(':id', $id);
         $stmt->bindParam(':titre', $titre);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':prix', $prix);

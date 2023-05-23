@@ -62,7 +62,7 @@ const Authentification = ({ signIn, setAuthentification }) => {
 	let deleteResa = () => {
 		const cookie = Cookies.get("jwt");
 		axios
-			.delete("http://localhost:8000/reservations/index.php", {
+			.delete(`${'/backend'}/reservations/index.php`, {
 				params: {
 					token: cookie,
 				},
@@ -288,7 +288,7 @@ const Authentification = ({ signIn, setAuthentification }) => {
 		if (auth.authStore.logged) {
 			const cookie = Cookies.get("jwt");
 			axios
-				.get("http://localhost:8000/reservations/index.php", {
+				.get(`${'/backend'}/reservations/index.php`, {
 					params: {
 						token: cookie,
 					},

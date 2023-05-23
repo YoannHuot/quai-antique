@@ -12,27 +12,75 @@ yarn dev
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Description
+Bienvenue sur le répertoire du projet Restaurant Le Quai Antique ! Cette application web a été créée en utilisant Next.js pour le front-end, PHP pour le back-end, et MySQL pour la base de données.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Prérequis
+Node.js et npm/yarn
+PHP 8.1.2
+MySQL
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Installation
+1. Clonez le répertoire  : 
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```bash
+git clone https://github.com/YoannHuot/quai-antique
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. Installez les dépendances du projet : 
 
-## Learn More
+```bash
+cd quai-antique
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+ou
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+yarn install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3.Configurez la base de données
 
-## Deploy on Vercel
+Assurez-vous d'avoir une base de données MySQL en cours d'exécution. Créez une base de données nommée quai_antique et configurez votre environnement avec les identifiants de la base de données.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+define("DBHOST", "localhost");
+define("DBUSER", "root");
+define("DBPASS", "votre_mot_de_passe");
+define("DBNAME", "quai_antique");
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+4.Démarrez le serveur
+Vous pouvez maintenant démarrer le serveur PHP en utilisant la commande suivante dans le répertoire de votre serveur :
+
+```bash
+cd backend
+php -S localhost:8000
+```
+
+5.Lancez l'application
+Ouvrez un autre terminal, naviguez jusqu'au répertoire du projet et lancez l'application avec npm ou yarn 
+
+```bash
+npm run dev
+```
+
+ou 
+
+```bash
+yarn dev
+```
+
+Votre application devrait maintenant être en cours d'exécution sur http://localhost:3000 !
+
+6. 
+
+## 
+
+- Installer php
+- Faire tourner un vhost php
+- créer la database
+- faire des .env pour changer tous les localhost:8000 par des trucs dynamiques
+
+admin-quai-antique@gmail.com2M

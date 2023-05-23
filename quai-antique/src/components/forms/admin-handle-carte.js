@@ -10,8 +10,12 @@ const AdminHandleCarte = ({ showProducts, products, setRefresh, refresh }) => {
 
 	return (
 		<div>
-			<AddProduct setRefresh={setRefresh} refresh={refresh} />
-			<div className="lg:flex lg:flex-row">
+			<AddProduct
+				setRefresh={setRefresh}
+				refresh={refresh}
+				param={"products"}
+			/>
+			<div className="lg:flex lg:flex-row lg:mb-12">
 				{_.map(showProducts, (contents, index) => {
 					let lastColum = index + 1 === products.length;
 					return (
@@ -36,6 +40,7 @@ const AdminHandleCarte = ({ showProducts, products, setRefresh, refresh }) => {
 										setRefresh={setRefresh}
 										refresh={refresh}
 										type={content.type}
+										param="products"
 									/>
 								);
 							})}

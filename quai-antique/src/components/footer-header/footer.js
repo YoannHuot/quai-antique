@@ -3,7 +3,7 @@ import useDeviceType from "@/hooks/device-type";
 import useSchedule from "@/hooks/schedule";
 import axios from "axios";
 
-const Footer = ({ menu }) => {
+const Footer = ({ menu, setOpen }) => {
 	const deviceType = useDeviceType();
 	const schedule = useSchedule();
 
@@ -70,7 +70,12 @@ const Footer = ({ menu }) => {
 						)}
 					</div>
 
-					<div className="col-span-1 flex justify-center flex-col items-center">
+					<button
+						className="col-span-1 flex justify-center flex-col items-center"
+						onClick={() => {
+							setOpen(true);
+						}}
+					>
 						<h3 className="font-bold lg:mb-4 mb-1 text-center">
 							Réserver
 						</h3>
@@ -79,7 +84,7 @@ const Footer = ({ menu }) => {
 							src="images/CTA.png"
 							className="xs:w-10 xs:h-10 lg:w-20 lg:h-20 text-center"
 						/>
-					</div>
+					</button>
 				</div>
 			</div>
 		</footer>

@@ -13,8 +13,7 @@ const MenuHeader = ({ setOpen }) => {
 
 	return (
 		<div
-			className={`menu px-2 h-14 w-full flex justify-between items-center bg-primary fixed bottom-0 z-40 
-    }`}
+			className={`menu px-2 h-14 w-full flex justify-between items-center bg-primary fixed bottom-0 z-40`}
 		>
 			<Link href={"/"}>
 				<div className="w-40 font-Lustria flex flex-row justify-center lg:justify-start items-center text-white text-center uppercase xs:text-lg md:text-base relative overflow-hidden ">

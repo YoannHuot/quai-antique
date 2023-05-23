@@ -130,7 +130,7 @@ const Reservation = ({ setIndex }) => {
 		if (formattedDate && guests && selectedHours) {
 			const cookie = Cookies.get("jwt");
 			await axios
-				.post("http://localhost:8000/reservations/index.php", {
+				.post(`${"/backend"}/reservations/index.php`, {
 					token: cookie,
 					formattedDate: formattedDate,
 					guests: guests,

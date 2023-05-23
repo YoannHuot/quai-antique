@@ -19,7 +19,7 @@ const useAuth = () => {
 
 	const signup = async (e) => {
 		await axios
-			.post("http://localhost:8000/users/index.php", { payload: e })
+			.post(`${"/backend"}/users/index.php`, { payload: e })
 			.then((response) => {
 				if (response.data === "Success") {
 					dispatch(updateLogged(true));
@@ -35,7 +35,7 @@ const useAuth = () => {
 
 	const login = async (data) => {
 		await axios
-			.get("http://localhost:8000/users/login.php", { params: data })
+			.get(`${"/backend"}/users/login.php`, { params: data })
 			.then((response) => {
 				if (response.data.jwt) {
 					let jwtObject = JSON.parse(response.data.jwt);
@@ -54,10 +54,13 @@ const useAuth = () => {
 					} else {
 						setValidation(response.data.validation);
 					}
+				} else {
+					setLoginResponse(response.data);
+					alert(response.data);
 				}
 			})
 			.catch((error) => {
-				// setLoginResponse(response.data);
+				console.log(response.data);
 				console.log(error);
 			});
 	};
@@ -69,7 +72,7 @@ const useAuth = () => {
 	const checkToken = async (data) => {
 		const payload = { token: data };
 		await axios
-			.get("http://localhost:8000/pages/homepage.php", { params: payload })
+			.get(`${"/backend"}/pages/homepage.php`, { params: payload })
 			.then((response) => {
 				dispatch(
 					checkValidation(response.data.name, response.data.firstname)
@@ -87,6 +90,7 @@ const useAuth = () => {
 		login,
 		checkToken,
 		logout,
+		loginResponse,
 		// signup,
 	};
 };

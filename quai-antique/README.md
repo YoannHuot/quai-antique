@@ -28,7 +28,8 @@ yarn install
 
 3.Configurez la base de données
 
-=> Assurez-vous d'avoir une base de données MySQL en cours d'exécution. Créez une base de données nommée quai_antique et configurez votre environnement avec les identifiants de la base de données.
+=> Assurez-vous d'avoir une base de données MySQL en cours d'exécution. 
+=> TRES IMPORTANT : Créez une base de données nommée quai_antique et configurez votre environnement avec les identifiants de la base de données.
 
 ```bash
 define("DBHOST", "localhost");
@@ -62,14 +63,17 @@ Votre application devrait maintenant être en cours d'exécution sur http://loca
 
 ## SQL && compte admin 
 
-1. Les requêtes SQL d'initialisation se trouvent dans le fichier 
-```bash
-backend/ini/functions
-```
+1. Après avoir créé la base de données quai_antique uniquement : 
 
-2. 
+```bash
+cd backend 
+php create-data-base.php
+```
 
 3.Pour créer le compte administrateur : 
 => Inscrivez-vous à l'application avec l'adresse mail admin-quai-antique@gmail.com 
 => Vous pouvez utilisez le mot de passe de votre choix. 
 => ATTENTION : seul ce mail permet l'authentification 
+
+4. LA CHARTE GRAPHIQUE ET LES MAQUETTES SE TROUVE?T A LA RACINE DU PROJET. 
+Malheureusement je n'ai pas pû l'ajouter dans le PDF de rendu. 

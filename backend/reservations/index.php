@@ -1,5 +1,5 @@
 <?php
-require_once '../config/config.php';
+require_once '../ini/ini.php';
 require_once '../functions.php';
 require_once '../functions-bdd.php';
 

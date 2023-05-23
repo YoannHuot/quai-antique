@@ -26,7 +26,7 @@ const CardAdmin = ({
 		e.preventDefault();
 		const cookie = Cookies.get("jwt");
 		axios
-			.delete(`${"/backend"}/administrator/${param}.php`, {
+			.delete(`http://localhost:8000/administrator/${param}.php`, {
 				params: {
 					token: cookie,
 					cardId: id,
@@ -72,7 +72,7 @@ const CardAdmin = ({
 			const cookie = Cookies.get("jwt");
 
 			const response = await axios.put(
-				`${"/backend"}/administrator/${param}.php`,
+				`http://localhost:8000/administrator/${param}.php`,
 				{ payload: payload, token: cookie }
 			);
 			if (response.status === 200) {

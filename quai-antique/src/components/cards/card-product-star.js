@@ -35,7 +35,7 @@ const CardProductStar = ({
 			setPhoto(null);
 
 			const response = await axios.post(
-				`${"/backend"}/administrator/products-phare.php`,
+				`http://localhost:8000/administrator/products-phare.php`,
 				formData,
 				{
 					headers: {
@@ -57,7 +57,7 @@ const CardProductStar = ({
 	};
 
 	useEffect(() => {
-		setPhotoUrl(`${"/backend"}/image.php?file=${productStar.photo}`);
+		setPhotoUrl(`http://localhost:8000/image.php?file=${productStar.photo}`);
 	}, [productStar]);
 
 	return (

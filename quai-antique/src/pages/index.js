@@ -61,7 +61,7 @@ export default function Home() {
 		const fetchProducts = async () => {
 			try {
 				const response = await axios.get(
-					`${"/backend"}/administrator/products-phare.php`
+					`http://localhost:8000/administrator/products-phare.php`
 				);
 				if (response.status === 200) {
 					setProducts(response.data.products);
@@ -190,7 +190,7 @@ export default function Home() {
 									<div
 										className="relative h-full w-full bg-center bg-no-repeat bg-red-200 flex items-end justify-center"
 										style={{
-											backgroundImage: `url(${"/backend"}/image.php?file=${
+											backgroundImage: `url(http://localhost:8000/image.php?file=${
 												product.photo
 											})`,
 										}}

@@ -29,12 +29,12 @@ const Authentification = ({ signIn, setAuthentification }) => {
 		longueur: new RegExp("(.{8,})"),
 	};
 
-	const [mail, setMail] = useState("gmail12@test.fr");
-	const [name, setName] = useState("Huot");
-	const [firstName, setFirstName] = useState("Yoann");
+	const [mail, setMail] = useState("");
+	const [name, setName] = useState("");
+	const [firstName, setFirstName] = useState("");
 
-	const [password, setPassword] = useState("Gmail12@test.fr");
-	const [passwordConfirm, setPasswordConfirm] = useState("Gmail12@test.fr");
+	const [password, setPassword] = useState("");
+	const [passwordConfirm, setPasswordConfirm] = useState("");
 
 	const [passwordValid, setPasswordValid] = useState();
 
@@ -62,7 +62,7 @@ const Authentification = ({ signIn, setAuthentification }) => {
 	let deleteResa = () => {
 		const cookie = Cookies.get("jwt");
 		axios
-			.delete(`${'/backend'}/reservations/index.php`, {
+			.delete(`http://localhost:8000/reservations/index.php`, {
 				params: {
 					token: cookie,
 				},
@@ -288,7 +288,7 @@ const Authentification = ({ signIn, setAuthentification }) => {
 		if (auth.authStore.logged) {
 			const cookie = Cookies.get("jwt");
 			axios
-				.get(`${'/backend'}/reservations/index.php`, {
+				.get(`http://localhost:8000/reservations/index.php`, {
 					params: {
 						token: cookie,
 					},

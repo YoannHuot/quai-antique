@@ -22,7 +22,7 @@ const EditMenuTitle = ({ title, menuId, setRefresh, refresh }) => {
 		const cookie = Cookies.get("jwt");
 
 		axios
-			.put(`${"/backend"}/administrator/menu.php`, {
+			.put(`http://localhost:8000/administrator/menu.php`, {
 				payload: payload,
 				token: cookie,
 			})
@@ -45,7 +45,7 @@ const EditMenuTitle = ({ title, menuId, setRefresh, refresh }) => {
 
 		const cookie = Cookies.get("jwt");
 		axios
-			.delete(`${"/backend"}/administrator/menu.php`, {
+			.delete(`http://localhost:8000/administrator/menu.php`, {
 				params: {
 					token: cookie,
 					menuId: menuId,

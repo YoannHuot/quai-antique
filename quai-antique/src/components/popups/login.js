@@ -6,7 +6,7 @@ const Login = ({ setSignIn }) => {
 	const deviceType = useDeviceType();
 	const auth = useAuth();
 	const [mail, setMail] = useState("admin-quai-antique@gmail.com");
-	const [password, setPassword] = useState("Yoshi90120!");
+	const [password, setPassword] = useState("");
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

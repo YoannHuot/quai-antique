@@ -30,7 +30,7 @@ const AdminHandleTime = () => {
 	const handleSubmit = () => {
 		const cookie = Cookies.get("jwt");
 		axios
-			.put(`${"/backend"}/opening/index.php`, {
+			.put(`http://localhost:8000/opening/index.php`, {
 				payload: newSchedule,
 				token: cookie,
 			})

@@ -1,5 +1,15 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// constantes d'environnement 
+define("DBHOST", "localhost");
+define("DBUSER", "root");
+define("DBPASS", "quai_antique_mdp");
+define("DBNAME", "quai_antique");
+
 function createDatabase($db)
 {
     try {
@@ -409,3 +419,22 @@ function insertConstants($db)
         $db->rollBack();
     }
 }
+
+// DSN de connexion 
+$dsn = "mysql:dbname=" . DBNAME . ";host=" . DBHOST;
+const SECRET = '0hLa83lleBroue11e';
+
+try {
+    $db = new PDO($dsn, DBUSER, DBPASS);
+} catch (PDOException $e) {
+    echo "An error occurred while accessing the database";
+    die($e->getMessage());
+}
+
+createDatabase($db);
+
+insertConstants($db);
+insertProducts($db);
+insertMenus($db);
+initializeOpeningHours($db);
+insertProductsPhare($db);

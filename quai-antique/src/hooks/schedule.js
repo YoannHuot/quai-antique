@@ -10,7 +10,7 @@ const useSchedule = () => {
 		const fetchOpeningHours = async () => {
 			try {
 				const response = await axios.get(
-					`${'/backend'}/opening/index.php`
+					`http://localhost:8000/opening/index.php`
 				);
 				if (response.status === 200) {
 					const openingHours = response.data;

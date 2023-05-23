@@ -34,7 +34,7 @@ const AddProduct = ({ setRefresh, refresh, param }) => {
 			const cookie = Cookies.get("jwt");
 
 			const response = await axios.post(
-				`${"/backend"}/administrator/${param}.php`,
+				`http://localhost:8000/administrator/${param}.php`,
 				{ payload: payload, token: cookie }
 			);
 			if (response.status === 200) {

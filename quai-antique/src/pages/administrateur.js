@@ -39,7 +39,7 @@ const Administrateur = () => {
 			const cookie = Cookies.get("jwt");
 
 			const response = await axios.post(
-				`${"/backend"}/administrator/constants.php`,
+				`http://localhost:8000/administrator/constants.php`,
 				{ id: 'PLACES_RESERVATION', value: personnesMax, token: cookie }
 			);
 			if (response.status === 200) {
@@ -91,7 +91,7 @@ const Administrateur = () => {
 		const fetchProducts = async () => {
 			try {
 				const response = await axios.get(
-					`${"/backend"}/administrator/products.php`
+					`http://localhost:8000/administrator/products.php`
 				);
 				if (response.status === 200) {
 					setProducts(response.data.products);
@@ -108,7 +108,7 @@ const Administrateur = () => {
 		const fetchProductsStars = async () => {
 			try {
 				const response = await axios.get(
-					`${"/backend"}/administrator/products-phare.php`
+					`http://localhost:8000/administrator/products-phare.php`
 				);
 				if (response.status === 200) {
 					setProductsStars(response.data.products);
@@ -124,7 +124,7 @@ const Administrateur = () => {
 		const fetchCapacite = async () => {
 			try {
 				const response = await axios.get(
-					`${"/backend"}/administrator/constants.php?id=PLACES_RESERVATION`
+					`http://localhost:8000/administrator/constants.php?id=PLACES_RESERVATION`
 				);
 				if (response.status === 200) {
 					setPersonneMax(response.data.value);

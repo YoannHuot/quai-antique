@@ -44,8 +44,8 @@ const Authentification = ({
 }) => {
 	const deviceType = useDeviceType();
 	const auth = useAuth();
-	const [mail, setMail] = useState("Yoann.huot2@outlook.fr");
-	const [password, setPassword] = useState("Yoshi90120!");
+	const [mail, setMail] = useState("");
+	const [password, setPassword] = useState("");
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -130,7 +130,7 @@ const Reservation = ({ setIndex }) => {
 		if (formattedDate && guests && selectedHours) {
 			const cookie = Cookies.get("jwt");
 			await axios
-				.post(`${"/backend"}/reservations/index.php`, {
+				.post(`http://localhost:8000/reservations/index.php`, {
 					token: cookie,
 					formattedDate: formattedDate,
 					guests: guests,

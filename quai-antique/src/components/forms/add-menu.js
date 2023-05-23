@@ -34,7 +34,7 @@ const AddMenu = ({ setRefresh, refresh, param }) => {
 			const cookie = Cookies.get("jwt");
 			console.log(formules);
 			const response = await axios.post(
-				`${"/backend"}/administrator/${param}.php`,
+				`http://localhost:8000/administrator/${param}.php`,
 				{
 					token: cookie,
 					titre: title,

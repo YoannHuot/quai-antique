@@ -3,7 +3,7 @@ import useSchedule from "@/hooks/schedule";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const AdminHandleTime = () => {
+const AdminHandleTime = ({ handleOpening }) => {
 	const schedule = useSchedule();
 	const { weekSchedule } = schedule;
 	const [newSchedule, setNewSchedule] = useState(null);
@@ -25,26 +25,6 @@ const AdminHandleTime = () => {
 		const value = event.target.value === "null" ? null : event.target.value;
 		updatedSchedule[day][periodIndex][timeIndex] = value;
 		setNewSchedule(updatedSchedule);
-	};
-
-	const handleSubmit = () => {
-		const cookie = Cookies.get("jwt");
-		axios
-			.put(`http://localhost:8000/opening/index.php`, {
-				payload: newSchedule,
-				token: cookie,
-			})
-			.then((response) => {
-				if (response.status === 200) {
-					console.log(response.data);
-				}
-			})
-			.catch((error) => {
-				console.error(
-					"Erreur lors de la mise à jour des horaires :",
-					error
-				);
-			});
 	};
 
 	const generateTimeOptions = (start, end) => {
@@ -80,7 +60,7 @@ const AdminHandleTime = () => {
 											}
 											className="border border-gray-300 rounded px-2 py-1 mb-2"
 										>
-											<option value={null}>Fermé</option>
+											<option value={null}>Select</option>
 											{(i === 0 ? morningHours : afternoonHours).map(
 												(hour) => (
 													<option key={hour} value={hour}>
@@ -95,13 +75,13 @@ const AdminHandleTime = () => {
 
 									<div className="flex flex-col justify-center items-center">
 										<select
-											value={hours[1] === "Fermé" ? null : hours[1]}
+											value={hours[1] === "Select" ? null : hours[1]}
 											onChange={(event) =>
 												handleTimeChange(day, i, 1, event)
 											}
 											className="border border-gray-300 rounded px-2 py-1"
 										>
-											<option value={null}>Fermé</option>
+											<option value={null}>Select</option>
 											{(i === 0 ? morningHours : afternoonHours).map(
 												(hour) => (
 													<option key={hour} value={hour}>
@@ -119,7 +99,9 @@ const AdminHandleTime = () => {
 			)}
 			<button
 				className="bg-gold text-white px-4 py-2 rounded mt-4 mb-14"
-				onClick={handleSubmit}
+				onClick={() => {
+					handleOpening(newSchedule);
+				}}
 			>
 				Soumettre
 			</button>

@@ -53,6 +53,9 @@ const Authentification = ({
 		auth.login(data);
 	};
 
+	useEffect(() => {
+		console.log(auth.loginResponse);
+	}, [auth.loginResponse]);
 	return (
 		<div className=" w-full pt-6">
 			<div className="mb-4 flex justify-between items-center ">
@@ -89,6 +92,14 @@ const Authentification = ({
 				<span>Vous n'avez pas de compte ? </span>
 				<span className="text-gold font-semibold">Enregistrez-vous</span>
 			</button>
+			{auth.loginResponse && (
+				<div className="w-full flex justify-center items-center">
+					<span className="text-base text-red-400 ">
+						{auth.loginResponse}
+					</span>
+				</div>
+			)}
+
 			<div className="w-full h-auto flex justify-center items-center py-8">
 				<div className="w-2 h-12 border-black border-r" />
 			</div>

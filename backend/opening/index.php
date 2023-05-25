@@ -4,27 +4,6 @@ require_once '../functions.php';
 require_once '../functions-bdd.php';
 
 
-$openingHours = [
-    // ['dayOfWeek' => 1, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
-    // ['dayOfWeek' => 1, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],  
-    ['dayOfWeek' => 1, 'shift' => 'CLOSED', 'openingTime' => NULL, 'closingTime' => NULL], 
-
-    ['dayOfWeek' => 2, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
-    ['dayOfWeek' => 2, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'], 
-    
-    ['dayOfWeek' => 3, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
-    ['dayOfWeek' => 3, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'], 
-
-    ['dayOfWeek' => 4, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
-    ['dayOfWeek' => 4, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'], 
-
-    ['dayOfWeek' => 5, 'shift' => 'FULL', 'openingTime' => '10:00:00', 'closingTime' => '20:00:00'],
-
-    ['dayOfWeek' => 6, 'shift' => 'FULL', 'openingTime' => '10:00:00', 'closingTime' => '23:00:00'],
-
-    ['dayOfWeek' => 7, 'shift' => 'CLOSED', 'openingTime' => NULL, 'closingTime' => NULL], 
-];
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // OpeningHours
     $queryOpeningHours = $db->prepare("SELECT * FROM OpeningHours");
@@ -49,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $isAdmin = CurrentUserIsAdmin($db, $currentUser, $currentUserMail);
         $schedule = $data["payload"];
 
-        foreach ($schedule as &$shifts) {
+        foreach ($schedule as $day => &$shifts) {
             foreach ($shifts as &$shift) {
                 if ($shift[0] === "Fermé") {
                     $shift[0] = null;
@@ -59,26 +38,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                 }
             }
         }
-
+        unset($shift);
+        unset($shifts);
 
         $dayOfWeekMap = [
-            'Dimanche' => 1,
-            'Lundi' => 2,
-            'Mardi' => 3,
-            'Mercredi' => 4,
-            'Jeudi' => 5,
-            'Vendredi' => 6,
-            'Samedi' => 7
+            'Lundi' => 1,
+            'Mardi' => 2,
+            'Mercredi' => 3,
+            'Jeudi' => 4,
+            'Vendredi' => 5,
+            'Samedi' => 6,
+            'Dimanche' => 7,
         ];
 
         foreach ($schedule as $dayOfWeek => $shifts) {
             $numericDayOfWeek = $dayOfWeekMap[$dayOfWeek];
+          
+            
             $openingTime1 = $shifts[0][0];
             $closingTime1 = $shifts[0][1];
             $openingTime2 = $shifts[1][0];
             $closingTime2 = $shifts[1][1];
         
-            echo "Updating $dayOfWeek ($numericDayOfWeek): $openingTime1-$closingTime1, $openingTime2-$closingTime2\n";
         
             if ($openingTime1 == NULL && $closingTime1 == NULL && $openingTime2 == NULL && $closingTime2 == NULL) {
                 $stmt = $db->prepare("
@@ -99,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                 $stmt->bindParam(':closingTime1', $closingTime1);
                 $stmt->bindParam(':numericDayOfWeek', $numericDayOfWeek);
                 $stmt->execute();
-                echo "Rows affected (AM): " . $stmt->rowCount() . "\n";
         
                 $stmt = $db->prepare("
                     UPDATE OpeningHours 
@@ -110,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
                 $stmt->bindParam(':closingTime2', $closingTime2);
                 $stmt->bindParam(':numericDayOfWeek', $numericDayOfWeek);
                 $stmt->execute();
-                echo "Rows affected (PM): " . $stmt->rowCount() . "\n";
             }
         }
     }

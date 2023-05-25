@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 // constantes d'environnement 
 define("DBHOST", "localhost");
 define("DBUSER", "root");
-define("DBPASS", "quai_antique_mdp");
+define("DBPASS", "1223Yoann!");
 define("DBNAME", "quai_antique");
 
 function createDatabase($db)
@@ -80,7 +80,7 @@ function createDatabase($db)
         CREATE TABLE IF NOT EXISTS OpeningHours (
                 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 dayOfWeek INT(1) UNSIGNED NOT NULL, 
-                shift ENUM('AM', 'PM', 'FULL', 'CLOSED') NOT NULL,
+                shift ENUM('AM', 'PM', 'CLOSED') NOT NULL,
                 openingTime TIME,
                 closingTime TIME,
                 UNIQUE KEY(dayOfWeek, shift)
@@ -187,7 +187,8 @@ function initializeOpeningHours($db)
 {
     $openingHours = [
        
-        ['dayOfWeek' => 1, 'shift' => 'CLOSED', 'openingTime' => NULL, 'closingTime' => NULL],
+        ['dayOfWeek' => 1, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
+        ['dayOfWeek' => 1, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],
 
         ['dayOfWeek' => 2, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
         ['dayOfWeek' => 2, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],
@@ -198,11 +199,14 @@ function initializeOpeningHours($db)
         ['dayOfWeek' => 4, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
         ['dayOfWeek' => 4, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],
 
-        ['dayOfWeek' => 5, 'shift' => 'FULL', 'openingTime' => '10:00:00', 'closingTime' => '20:00:00'],
+        ['dayOfWeek' => 5, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
+        ['dayOfWeek' => 5, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],
 
-        ['dayOfWeek' => 6, 'shift' => 'FULL', 'openingTime' => '10:00:00', 'closingTime' => '23:00:00'],
+        ['dayOfWeek' => 6, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
+        ['dayOfWeek' => 6, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],
 
-        ['dayOfWeek' => 7, 'shift' => 'CLOSED', 'openingTime' => NULL, 'closingTime' => NULL],
+        ['dayOfWeek' => 7, 'shift' => 'AM', 'openingTime' => '10:00:00', 'closingTime' => '15:00:00'],
+        ['dayOfWeek' => 7, 'shift' => 'PM', 'openingTime' => '18:00:00', 'closingTime' => '23:00:00'],
     ];
 
     try {
@@ -391,8 +395,10 @@ function insertProductsPhare($db)
         }
 
         $db->commit();
-    } catch (Exception $e) {
+    }catch (Exception $e) {
+        echo 'Caught exception during insertProductsPhare: ', $e->getMessage(), "\n";
         $db->rollBack();
+    
     } catch (Exception $e) {
         echo $e->getMessage();
         $db->rollBack();

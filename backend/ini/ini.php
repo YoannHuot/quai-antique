@@ -13,7 +13,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // constantes d'environnement 
 define("DBHOST", "localhost");
 define("DBUSER", "root");
-define("DBPASS", "quai_antique_mdp");
+define("DBPASS", "1223Yoann!");
 define("DBNAME", "quai_antique");
 
 // DSN de connexion 

@@ -11,9 +11,12 @@ import Footer from "@/components/footer-header/footer";
 import axios from "axios";
 import useAuth from "@/store/auth/hooks";
 import Cookies from "js-cookie";
+import PopUp from "@/components/popups/popup";
 
 const Administrateur = () => {
+	const [openMenu, setOpenMenu] = useState(false);
 	const [open, setOpen] = useState(false);
+
 	const auth = useAuth();
 
 	const [adminCheck, setAdminCheck] = useState(false);
@@ -33,6 +36,7 @@ const Administrateur = () => {
 	const [personnesMax, setPersonneMax] = useState(0);
 
 	const [refresh, setRefresh] = useState(false);
+	const [newSchedule, setNewSchedule] = useState();
 
 	const updatePersonneMax = async () => {
 		try {
@@ -40,7 +44,7 @@ const Administrateur = () => {
 
 			const response = await axios.post(
 				`http://localhost:8000/administrator/constants.php`,
-				{ id: 'PLACES_RESERVATION', value: personnesMax, token: cookie }
+				{ id: "PLACES_RESERVATION", value: personnesMax, token: cookie }
 			);
 			if (response.status === 200) {
 				console.log(response.data);
@@ -49,6 +53,32 @@ const Administrateur = () => {
 		} catch (error) {
 			console.error("Erreur lors de l'insertion des produits: ", error);
 		}
+	};
+
+	const handleOpening = (payload) => {
+		setOpen(true);
+		setNewSchedule(payload);
+	};
+
+	const submitNewOpenings = () => {
+		console.log(newSchedule);
+		const cookie = Cookies.get("jwt");
+		axios
+			.put(`http://localhost:8000/opening/index.php`, {
+				payload: newSchedule,
+				token: cookie,
+			})
+			.then((response) => {
+				if (response.status === 200) {
+					console.log(response.data);
+				}
+			})
+			.catch((error) => {
+				console.error(
+					"Erreur lors de la mise à jour des horaires :",
+					error
+				);
+			});
 	};
 
 	useEffect(() => {
@@ -111,6 +141,7 @@ const Administrateur = () => {
 					`http://localhost:8000/administrator/products-phare.php`
 				);
 				if (response.status === 200) {
+					console.log(response.data);
 					setProductsStars(response.data.products);
 				}
 			} catch (error) {
@@ -196,18 +227,22 @@ const Administrateur = () => {
 									className="w-20 h-8 border border-black rounded-lg bg-white text-primary font-semibold pl-2"
 								/>
 								<button
-								className="bg-gold text-black px-2 text-white w-20 py-1 m-2 shadow-xl rounded-md font-semibold"
-								onClick={async () => {
-									updatePersonneMax();
-								}}>Valider</button>
+									className="bg-gold  px-2 text-white w-20 py-1 m-2 shadow-xl rounded-md font-semibold"
+									onClick={async () => {
+										updatePersonneMax();
+									}}
+								>
+									Valider
+								</button>
 							</div>
 						</section>
-						<div className="w-full flex flex-row flex justify-between flex-wrap">
+						<div className="w-full flex flex-row  justify-between flex-wrap">
 							<button
-								className={`${handleCarte
-									? "bg-gold text-black"
-									: "bg-primary text-white"
-									} p-2 text-white w-32 h-28 mr-2 shadow-xl rounded-md`}
+								className={`${
+									handleCarte
+										? "bg-gold text-black"
+										: "bg-primary text-white"
+								} p-2 text-white w-32 h-28 mr-2 shadow-xl rounded-md`}
 								onClick={() => {
 									setHandleCarte(!handleCarte),
 										setHandleMenu(false),
@@ -218,10 +253,11 @@ const Administrateur = () => {
 								{handleCarte ? "Fermer" : "Modifier la carte"}
 							</button>
 							<button
-								className={`${handleMenu
-									? "bg-gold text-black"
-									: "bg-primary text-white"
-									} p-2 text-white w-32 h-28 mr-2 shadow-xl rounded-md`}
+								className={`${
+									handleMenu
+										? "bg-gold text-black"
+										: "bg-primary text-white"
+								} p-2 text-white w-32 h-28 mr-2 shadow-xl rounded-md`}
 								onClick={() => {
 									setHandleMenu(!handleMenu),
 										setHandleCarte(false),
@@ -232,10 +268,11 @@ const Administrateur = () => {
 								{handleMenu ? "Fermer" : "Modifier les menus"}
 							</button>
 							<button
-								className={`${handleTime
-									? "bg-gold text-black"
-									: "bg-primary text-white"
-									} p-2 text-white w-32 h-28 mr-2 shadow-xl rounded-md`}
+								className={`${
+									handleTime
+										? "bg-gold text-black"
+										: "bg-primary text-white"
+								} p-2 text-white w-32 h-28 mr-2 shadow-xl rounded-md`}
 								onClick={() => {
 									setHandleTime(!handleTime),
 										setHandleCarte(false),
@@ -247,10 +284,11 @@ const Administrateur = () => {
 							</button>
 
 							<button
-								className={`${handleStars
-									? "bg-gold text-black"
-									: "bg-primary text-white"
-									} p-2 text-white w-32 h-28 mr-2 shadow-xl rounded-md`}
+								className={`${
+									handleStars
+										? "bg-gold text-black"
+										: "bg-primary text-white"
+								} p-2 text-white w-32 h-28 mr-2 shadow-xl rounded-md`}
 								onClick={() => {
 									setHandleStars(!handleStars),
 										setHandleCarte(false),
@@ -281,7 +319,9 @@ const Administrateur = () => {
 								refresh={refresh}
 							/>
 						)}
-						{handleTime && <AdminHandleTime />}
+						{handleTime && (
+							<AdminHandleTime handleOpening={handleOpening} />
+						)}
 						{handleMenu && (
 							<AdminHandleMenu
 								setMenu={setMenu}
@@ -295,7 +335,55 @@ const Administrateur = () => {
 			) : (
 				<div>ACCES REFUSE</div>
 			)}
-			<MenuHeader className="pb-10" setOpen={setOpen} />
+			<MenuHeader className="pb-10" setOpenMenu={setOpenMenu} />
+
+			<PopUp open={open} setOpen={setOpen}>
+				<header className="w-full flex justify-between items-center">
+					<h2 className="font-Libre text-2xl font-bold w-1/2">
+						Réservation
+					</h2>
+					<button
+						className="cursor pointer"
+						onClick={() => {
+							setOpen(false);
+						}}
+					>
+						<img src="/images/back-button.png" className="w-6 h-6" />
+					</button>
+				</header>
+				<div className="flex flex-col">
+					{newSchedule &&
+						Object.entries(newSchedule).map(([day, openHours], index) => (
+							<div
+								key={index}
+								className="flex flex-row w-full justify-between"
+							>
+								<p className="text-start w-1/2 xs:ml-6 md:ml-0">
+									{day}
+								</p>
+								<p className="text-start w-1/2">
+									{openHours.map((hours, i) => (
+										<span key={i} className="text-xs">
+											{hours[0]}-{hours[1]}
+											{i < openHours.length - 1 ? " / " : ""}
+										</span>
+									))}
+								</p>
+							</div>
+						))}
+					<div className="flex flex-row w-full justify-between mt-8">
+						<button
+							className="bg-gold text-white px-4 py-2 rounded mt-4 mb-14"
+							onClick={submitNewOpenings}
+						>
+							Confirmer
+						</button>
+						<button className="bg-primary text-white px-4 py-2 rounded mt-4 mb-14">
+							Annuler
+						</button>
+					</div>
+				</div>
+			</PopUp>
 		</div>
 	);
 };

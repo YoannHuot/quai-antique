@@ -63,12 +63,16 @@ Votre application devrait maintenant être en cours d'exécution sur http://loca
 
 ## SQL && compte admin 
 
+0. Les requêtes SQL de création des tables se trouvent dans le fichier create-databse.php dans le dossier backend.
+
 1. Après avoir créé la base de données quai_antique uniquement : 
 
 ```bash
 cd backend 
-php create-data-base.php
+php create-database.php
 ```
+
+ATTENTION :  ne lancer qu'une seul fois ce fichier, sans quoi les données initiales seront faussées. 
 
 3.Pour créer le compte administrateur : 
 => Inscrivez-vous à l'application avec l'adresse mail admin-quai-antique@gmail.com 

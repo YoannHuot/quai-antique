@@ -7,6 +7,7 @@ const Footer = ({ menu, setOpen }) => {
 	const deviceType = useDeviceType();
 	const schedule = useSchedule();
 
+	// console.log(schedule.weekSchedule);
 	return (
 		<footer
 			className={`bg-white w-full font-Laila  ${

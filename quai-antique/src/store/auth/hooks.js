@@ -56,7 +56,6 @@ const useAuth = () => {
 					}
 				} else {
 					setLoginResponse(response.data);
-					alert(response.data);
 				}
 			})
 			.catch((error) => {

@@ -53,9 +53,6 @@ const Authentification = ({
 		auth.login(data);
 	};
 
-	useEffect(() => {
-		console.log(auth.loginResponse);
-	}, [auth.loginResponse]);
 	return (
 		<div className=" w-full pt-6">
 			<div className="mb-4 flex justify-between items-center ">
@@ -119,6 +116,7 @@ const Reservation = ({ setIndex }) => {
 
 	const [confirm, setConfirm] = useState(false);
 	const [message, setMessage] = useState("");
+	const [verify, setVerify] = useState(false);
 
 	useEffect(() => {
 		const year = selectedDate && selectedDate.getFullYear();
@@ -270,37 +268,6 @@ const Reservation = ({ setIndex }) => {
 	);
 };
 
-const Validation = () => {
-	const deviceType = useDeviceType();
-
-	return (
-		<div className="w-full h-full xs:pb-12 pb-6 flex flex-col text-center items-center justify-center ">
-			<div className="xs:w-2/3 lg:w-1/2 mt-4 flex flex-col items-center text-center bg-slate-200 p-4 rounded-lg">
-				<span className="mb-2 ">Aucun convive ne souffre d’allergie</span>
-				<div className="border-b border-primary w-8 border-1 flex justify-center mb-2" />
-				<span className="mb-2">Table réservé pour 4 personnes</span>
-				<div className="border-b border-primary w-8 border-1 flex justify-center mb-2" />
-				<span className="mb-2">le 12/08/2023</span>
-				<div className="border-b border-primary w-8 border-1 flex justify-center mb-2" />
-				<span className="mb-2">à 10h30</span>
-			</div>
-			<footer className="h-16 pt-4">
-				<button
-					className={`${
-						deviceType === "mobile" ? "w-32" : "w-40"
-					}  bg-gold rounded-lg h-8 text-white`}
-					onClick={() => {
-						// setIndex(3);
-						console.log("submit resa");
-					}}
-				>
-					<span>Valider</span>
-				</button>
-			</footer>
-		</div>
-	);
-};
-
 const WrapperResa = ({ setSignIn, setOpen, setAuthentification }) => {
 	const auth = useAuth();
 	const [index, setIndex] = useState(1);
@@ -322,9 +289,6 @@ const WrapperResa = ({ setSignIn, setOpen, setAuthentification }) => {
 				}
 				break;
 
-			case 3:
-				return <Validation setIndex={setIndex} />;
-				break;
 			default:
 				break;
 		}

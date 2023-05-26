@@ -53,15 +53,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         if($isAdmin) { 
             if($payload) {
 
+                $stmt = $db->prepare("SELECT * FROM ProductsPhare WHERE productId = :cardId");
+                $stmt->execute([':cardId' => $cardId]);
+                $productStar = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if($productStar) {
+                    echo json_encode(['success' => false, 'message' => 'Impossible de supprimer ce produit car il est un de nos produits star, veuillez d\'abord l\'enlever de la liste des produits star en choisisant un autre produit.']);
+                    exit();
+                }
+    
+                
+                // Supprimer le produit de la table Products
                 $stmt = $db->prepare("DELETE FROM Products WHERE id = :cardId");
                 $stmt->execute([':cardId' => $cardId]);
                 
 
-            if($stmt->rowCount() > 0) {
-                echo json_encode(['success' => true, 'message' => 'Produit supprimé avec succès']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de la suppression du produit']);
-            }
+                if($stmt->rowCount() > 0) {
+                    echo json_encode(['success' => true, 'message' => 'Produit supprimé avec succès']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Erreur lors de la suppression du produit']);
+                }
 
             } else { 
                 echo json_encode(['success' => false, 'message' => 'Token non valide']);

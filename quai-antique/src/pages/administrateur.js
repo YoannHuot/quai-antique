@@ -61,7 +61,6 @@ const Administrateur = () => {
 	};
 
 	const submitNewOpenings = () => {
-		console.log(newSchedule);
 		const cookie = Cookies.get("jwt");
 		axios
 			.put(`http://localhost:8000/opening/index.php`, {
@@ -71,6 +70,7 @@ const Administrateur = () => {
 			.then((response) => {
 				if (response.status === 200) {
 					console.log(response.data);
+					setOpen(false);
 				}
 			})
 			.catch((error) => {

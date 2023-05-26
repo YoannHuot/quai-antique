@@ -62,7 +62,7 @@ const CardProductStar = ({
 
 	return (
 		<>
-			<div className="text-white bg-primary text-black rounded-md p-4 flex flex-col relative w-full">
+			<div className="text-white bg-primary rounded-md p-4 flex flex-col relative w-full">
 				{productStar && (
 					<>
 						<div className="flex flex-col">

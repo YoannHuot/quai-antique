@@ -3,7 +3,7 @@ import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import useAuth from "@/store/auth/hooks";
 
-const MenuHeader = ({ setOpen }) => {
+const MenuHeader = ({ setOpen, menu }) => {
 	const auth = useAuth();
 	const [IsMounted, setIsMounted] = useState(false);
 
@@ -21,7 +21,7 @@ const MenuHeader = ({ setOpen }) => {
 					<span>Acceuil</span>
 				</div>
 			</Link>
-			{IsMounted && !auth.authStore.isAdmin && (
+			{IsMounted && !auth.authStore.isAdmin && !menu && (
 				<button
 					onClick={() => {
 						setOpen(true);

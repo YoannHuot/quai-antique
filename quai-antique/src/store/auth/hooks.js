@@ -90,7 +90,6 @@ const useAuth = () => {
 		checkToken,
 		logout,
 		loginResponse,
-		// signup,
 	};
 };
 

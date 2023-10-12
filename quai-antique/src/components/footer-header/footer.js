@@ -59,12 +59,22 @@ const Footer = ({ menu, setOpen }) => {
 										{day}
 									</p>
 									<p className="text-start w-1/2">
-										{openHours.map((hours, i) => (
-											<span key={i}>
-												{hours[0]}-{hours[1]}
-												{i < openHours.length - 1 ? " / " : ""}
-											</span>
-										))}
+										{openHours.map((hours, i) => {
+											const startTime = hours[0]
+												.split(":")
+												.slice(0, 2)
+												.join(":");
+											const endTime = hours[1]
+												.split(":")
+												.slice(0, 2)
+												.join(":");
+											return (
+												<span key={i}>
+													{startTime}-{endTime}
+													{i < openHours.length - 1 ? " / " : ""}
+												</span>
+											);
+										})}
 									</p>
 								</div>
 							)

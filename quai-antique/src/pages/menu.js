@@ -8,6 +8,7 @@ import PopUpContentResa from "../components/popups/wrapper-resa";
 import CardMenu from "@/components/cards/card-menu";
 import Footer from "@/components/footer-header/footer";
 import axios from "axios";
+import WrapperResa from "@/components/popups/wrapper-resa.js";
 
 const Menu = () => {
 	const [open, setOpen] = useState(false);
@@ -16,32 +17,29 @@ const Menu = () => {
 	const [products, setProducts] = useState();
 	const [showProducts, setShowProducts] = useState();
 	const [menu, setMenu] = useState();
-	const [showMenu, setShowMenu] = useState();
+	const [po, setShowMenu] = useState();
 
 	const deviceType = useDeviceType();
 
 	useEffect(() => {
 		if (products) {
 			const typeMapping = {
-				entree: "entrée",
+				entree: "entrées",
 				plat: "plats",
 				dessert: "desserts",
 			};
 
 			const productsSorting = Object.values(
 				products.reduce((acc, product) => {
-					// Convertir le type du produit à son équivalent en anglais
 					const title = typeMapping[product.type];
 
 					if (!acc[title]) {
-						// Si ce groupe n'existe pas encore, le créer
 						acc[title] = {
 							title: title,
 							products: [],
 						};
 					}
 
-					// Ajouter le produit au groupe approprié
 					acc[title].products.push({
 						id: product.id.toString(),
 						title: product.titre,
@@ -198,43 +196,11 @@ const Menu = () => {
 					</div>
 				</section>
 				<div className="mb-16 text-center">
-					<Footer menu />
+					<Footer menu={true} />
 				</div>
 			</div>
-			<MenuHeader className="pb-10" setOpen={setOpen} />
 
-			<PopUp open={open} setOpen={setOpen}>
-				<header className="w-full flex justify-between items-center">
-					<h2 className="font-Libre text-2xl font-bold w-1/2">
-						Réservation
-					</h2>
-					<button
-						className="cursor pointer"
-						onClick={() => {
-							setOpen(false);
-						}}
-					>
-						<img src="/images/back-button.png" className="w-6 h-6" />
-					</button>
-				</header>
-				<PopUpContentResa />
-			</PopUp>
-
-			<PopUp open={auth} setOpen={setAuth}>
-				<header className="w-full flex justify-between items-center">
-					<h2 className="font-Libre text-2xl font-bold w-2/3">
-						Création de compte
-					</h2>
-					<button
-						className="cursor pointer"
-						onClick={() => {
-							setAuth(false);
-						}}
-					>
-						<img src="/images/back-button.png" className="w-6 h-6" />
-					</button>
-				</header>
-			</PopUp>
+			<MenuHeader className="pb-10" setOpen={setOpen} menu={menu} />
 		</div>
 	);
 };

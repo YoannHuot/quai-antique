@@ -40,7 +40,6 @@ function checkUserLogin($db, $email, $password)
     }
 }
 
-
 /*
 * Vérification de la validité de l'email envoyé
 */

@@ -21,7 +21,6 @@ const AddProduct = ({ setRefresh, refresh, param }) => {
 			description: description,
 		};
 
-		console.log(payload);
 		const regex = /^\d+$/;
 		let checkPrice = regex.test(prix);
 

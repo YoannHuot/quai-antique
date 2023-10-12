@@ -36,6 +36,7 @@ const Administrateur = () => {
 	const [personnesMax, setPersonneMax] = useState(0);
 
 	const [refresh, setRefresh] = useState(false);
+
 	const [newSchedule, setNewSchedule] = useState();
 
 	const updatePersonneMax = async () => {
